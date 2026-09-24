@@ -142,3 +142,26 @@ Those three are **not measured**, and nothing below speaks for them.
   swept over its threshold on that pair; Laya-v2 is swept the same way over P(powerful). Both are scored
   by AIQ against the same-sample hull of the two models, on the same 2,451 test prompts. No refit on
   RouterBench for either router.
+
+### Amendment 4 — 2026-09-24, before vLLM Semantic Router was run on these corpora
+
+**H8: Laya-v2 against vLLM Semantic Router** (vllm-project/semantic-router), which ranks 6th of 32 on the
+RouterArena leaderboard and is the highest-ranked router there with open code and weights. RouteLLM
+(H7) ranks 31st, so H7 alone says little about the current state of the art.
+
+- **What is reproduced.** RouterArena's own adapter for this router (`router_inference/router/vllm_sr.py`)
+  calls the router's intent-classification endpoint and looks the returned category up in a
+  category-to-model table. Here the released classifier behind that endpoint,
+  `llm-semantic-router/mmbert32k-intent-classifier-merged`, is run directly: argmax category over its
+  14 labels. The leaderboard entry also used prompt-structure and projection signals whose
+  configuration is not published; those are **not reproduced**, and this measures the published
+  adapter's mechanism, not that exact entry.
+- **Bands.** The category-to-band table is fitted on the tune split: for each category, the band with
+  the most correct tune rows, ties to the more capable band (the gateway's own fail-strong direction).
+  A category unseen on tune gets tune's majority band. Fitting the table on tune is in the router's favour.
+- **Read once on held**, the same 151 H1 rows and 60 H2 asks, DSS rows apart.
+- **Claim.** H1's bar: "Laya-v2 beats vLLM-SR" only if band accuracy Laya-v2 − vLLM-SR ≥ 0.05 and one-sided
+  exact McNemar p < 0.05. Quality on both menus with the paired 90% bootstrap CI, "better" only where it
+  excludes 0. A tie is reported as a tie.
+- **No RouterBench leg.** A category router has no score to sweep along a cost-quality curve, and a
+  category table refitted on RouterBench's training split would be a different router.

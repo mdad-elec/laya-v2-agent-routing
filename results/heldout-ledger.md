@@ -9,3 +9,4 @@ One line per read, written in the same commit as the result it names (`scripts/l
 | 2026-09-24 | R4 | laya-v2-policy (pre-declared default) | r4-held-v2-policy-{tier-240,cells-pilot}.json, r4-report.md |
 | 2026-09-24 | R4 | laya-v2-outcome (pre-declared second variant) | r4-held-v2-outcome-{tier-240,cells-pilot}.json, r4-report.md |
 | 2026-09-24 | H7 | routellm/bert_gpt4_augmented, t_lo 0.65 / t_hi 0.69 fitted on tune (amendment 3) | routellm-tier-240.jsonl, routellm-cells-pilot.jsonl, routellm.json, routellm.md |
+| 2026-09-24 | H8 | vLLM-SR intent classifier (mmbert32k-intent-classifier-merged), category table fitted on tune (amendment 4) | vllmsr-tier-240.jsonl, vllmsr-cells-pilot.jsonl, vllmsr.json, vllmsr.md |

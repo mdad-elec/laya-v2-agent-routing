@@ -129,6 +129,23 @@ Each router wins the question it was trained on. RouteLLM's score predicts wheth
 barely separates this estate's tiers, so the tune-fitted thresholds send 89% of requests to `small`. Laya-v2
 learned the spending policy, and on RouteLLM's own benchmark pair it is a hair behind.
 
+## 6c. Against vLLM Semantic Router (H8, amendment 4)
+
+RouteLLM ranks 31st of 32 on the RouterArena leaderboard, so H7 alone says little about the current state of the
+art. vLLM Semantic Router ranks 6th, the highest there with open code and weights. Its released intent classifier
+was run as RouterArena's adapter uses it, with the category-to-band table fitted on tune. The leaderboard entry's
+unpublished extra signals were not reproduced (`results/laya-v2/vllmsr.md`).
+
+| | vLLM-SR | Laya-v2 | |
+|---|---|---|---|
+| held band accuracy, 151 rows | 0.530 | **0.801** | 48 vs 7, p = 6.5e-9 |
+| of which: 60 pilot asks | 0.450 | 0.717 | 20 vs 4, p = 0.0008 |
+| quality, cell menu | 0.888 | **0.944** | CI [+0.017, +0.106]; 218 vs 576 µUSD per turn |
+| quality, models-only ladder | 0.855 | 0.838 | a tie; 41 vs 72 µUSD |
+
+A subject category is weak evidence of how hard an ask is. The fine-tuned Laya decides the tier better than a
+category table does.
+
 ## 7. What went the other way
 
 - **Effort barely matters for correctness here.** For a given model, the lowest measured effort is within 0.05 of that

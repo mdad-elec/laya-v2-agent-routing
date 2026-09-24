@@ -1,0 +1,73 @@
+{
+ "checkpoint": "llm-semantic-router/mmbert32k-intent-classifier-merged",
+ "weights_sha256": "f53cd591a3d64bfbde8d045a41ca91a197eef270d68f257fc82427332c55ed49",
+ "table": {
+  "business": "powerful",
+  "computer science": "medium",
+  "other": "small",
+  "psychology": "powerful",
+  "physics": "powerful",
+  "philosophy": "small",
+  "health": "small",
+  "economics": "small",
+  "math": "small",
+  "law": "powerful",
+  "engineering": "small"
+ },
+ "default": "small",
+ "tune_accuracy": 0.5436241610738255,
+ "n_tune": 149,
+ "n_held": 151,
+ "held_categories": {
+  "computer science": 58,
+  "other": 30,
+  "business": 25,
+  "math": 16,
+  "economics": 6,
+  "psychology": 6,
+  "health": 5,
+  "philosophy": 3,
+  "biology": 1,
+  "law": 1
+ },
+ "share": {
+  "small": 0.40397350993377484,
+  "medium": 0.3841059602649007,
+  "powerful": 0.2119205298013245
+ },
+ "by_corpus": {
+  "all": {
+   "n": 151,
+   "vllmsr": 0.5298013245033113,
+   "laya_v2": 0.8013245033112583,
+   "judge": 0.6622516556291391,
+   "vllmsr_only": 7,
+   "laya_v2_only": 48,
+   "p_laya_v2_better": 0.0,
+   "under": 39,
+   "over": 32
+  },
+  "borrowed": {
+   "n": 91,
+   "vllmsr": 0.5824175824175825,
+   "laya_v2": 0.8571428571428571,
+   "judge": 0.6373626373626373,
+   "vllmsr_only": 3,
+   "laya_v2_only": 28,
+   "p_laya_v2_better": 2e-06,
+   "under": 24,
+   "over": 14
+  },
+  "pilot": {
+   "n": 60,
+   "vllmsr": 0.45,
+   "laya_v2": 0.7166666666666667,
+   "judge": 0.7,
+   "vllmsr_only": 4,
+   "laya_v2_only": 20,
+   "p_laya_v2_better": 0.000772,
+   "under": 15,
+   "over": 18
+  }
+ }
+}

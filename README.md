@@ -30,7 +30,15 @@ dataset, a runnable benchmark package, and the fine-tuned checkpoint with the co
   112 of 120 asks, so the effort question was dropped.
 - **It does not transfer to RouterBench.** Neither the zero-shot nor the fine-tuned Laya reaches the single-model
   hull on any of six tasks. Laya-v2 learned a spending policy, and RouterBench labels which model solved the prompt.
-- **Against RouteLLM's released BERT router (pre-registered, amendment 3),** Laya-v2 wins the decision this repo
+- **Against vLLM Semantic Router (pre-registered, amendment 4),** which ranks 6th of 32 on the
+  [RouterArena](https://github.com/RouteWorks/RouterArena) leaderboard and is the highest-ranked entry with open
+  code and weights, Laya-v2 wins the band decision: 0.801 against 0.530 (p = 6.5e-9). It also wins on our own asks
+  alone: 0.717 against 0.450 (p = 0.0008). Answer quality on the cell menu is 0.944 against 0.888, CI
+  [+0.017, +0.106], at 2.6× lower cost, and the models-only ladder is a tie. Its released intent classifier was run
+  the way RouterArena's adapter uses it. The leaderboard entry's unpublished extra signals were not reproduced
+  (`results/vllmsr.md`).
+- **Against RouteLLM's released BERT router (pre-registered, amendment 3),** a 2024 baseline that RouterArena ranks
+  31st of 32, Laya-v2 wins the decision this repo
   is about. Band accuracy is 0.801 against 0.430 (p = 2e-10). Answer quality on the cell menu is 0.944 against
   0.842, CI [+0.053, +0.157], and the models-only ladder is a tie at 2.6× lower cost. On RouteLLM's own
   RouterBench pair, GPT-4 against Mixtral, RouteLLM is ahead by 0.006 AIQ on average, and only MMLU is clearly
