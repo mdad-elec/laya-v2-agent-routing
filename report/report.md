@@ -146,6 +146,15 @@ unpublished extra signals were not reproduced (`results/laya-v2/vllmsr.md`).
 A subject category is weak evidence of how hard an ask is. The fine-tuned Laya decides the tier better than a
 category table does.
 
+## 6d. A Laya-verified cascade (H9, amendment 5)
+
+TypeSafe's cost cookbook routes after the answer: the cheap model drafts, a System-One verifier checks the draft,
+and the turn escalates only on a failed check. Replayed over our graded answers, a perfect verifier would match
+v2-policy's quality at about a third of its mean cost. Neither Laya verifier comes close: zero-shot AUROC 0.34, and
+0.46 after a fine-tune on 1,089 graded tune answers. On the local model's answers, the tier that matters most, AUROC
+is 0.47 and 0.55. Judging whether an answer is right needs reasoning over the answer, which a one-pass encoder does
+not do (`results/laya-v2/cascade.md`).
+
 ## 7. What went the other way
 
 - **Effort barely matters for correctness here.** For a given model, the lowest measured effort is within 0.05 of that

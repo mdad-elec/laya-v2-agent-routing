@@ -165,3 +165,33 @@ RouterArena leaderboard and is the highest-ranked router there with open code an
   excludes 0. A tie is reported as a tie.
 - **No RouterBench leg.** A category router has no score to sweep along a cost-quality curve, and a
   category table refitted on RouterBench's training split would be a different router.
+
+### Amendment 5 — 2026-09-24, before any verifier was run
+
+**H9: a verified cascade against pre-routing.** This is TypeSafe's `jev-verified-cascade` pattern with Laya as the
+verifier. It answers first and routes afterwards. Replayed offline over the graded answers of
+`the 120-ask cell run`; no new model call except the verifier's.
+
+- **Tiers** are arm C's cell menu (`corpus/menus/cells.json`): `small` local-27b @ off → `medium` codex luna @ high →
+  `powerful` codex sol @ high. The cascade takes the small cell's answer, asks the verifier, and escalates one tier when
+  P(correct) < τ. The powerful tier's answer is always accepted. Cost and latency are the sums over every tier tried;
+  the verifier adds $0 (served locally).
+- **The verifier question**, one 2-option `choice` over the state `{"request", "answer"}`: instructions "Does `answer`
+  fully and correctly do what `request` asks?"; `correct`: "The answer does everything the request asks, and every
+  fact, number and line of code in it is right."; `wrong`: "The answer misses part of the request, gets something
+  wrong, or answers a different question."
+- **Label** for an answer: correct iff its graded score ≥ 0.8 (a failed call scores 0). Unscored answers are left out.
+- **Variant A:** the root checkpoint, zero-shot, as served.
+- **Variant B:** an RLCD fine-tune of the root on (request, answer, label) rows from the **tune asks only**, all 23
+  cells. The validation slice is 20% of tune asks, grouped by ask so no ask's answers sit on both sides. It picks the
+  epoch and the temperature. Labels are smoothed 0.9 / 0.1. Context 1,024 tokens if the GPU allows, else 512 (recorded).
+- **Operating point, fitted on tune:** τ on the grid 0.05 … 0.95 is the value with the lowest mean cost whose tune
+  quality is ≥ v2-policy's tune quality on the same menu. If none reaches it, the τ with the best tune quality, ties
+  to the cheaper. v2-policy was trained on the tune asks, so its tune quality is optimistic; the constraint is
+  conservative for the cascade.
+- **Arms read once on held (60 asks):** A-cascade, B-cascade, and B-hybrid (the cascade starts at v2-policy's band
+  instead of `small`). An oracle verifier (accept iff the graded score ≥ 0.8) is reported as the ceiling. Verifier
+  AUROC is reported on every held answer of every cell.
+- **Claim.** "The cascade beats pre-routing" only if, against v2-policy on the same 60 held asks, the paired 90%
+  bootstrap CI of quality has a lower bound > −0.02 **and** the paired CI of mean cost per ask lies wholly below 0.
+  Anything else is reported as what it is.

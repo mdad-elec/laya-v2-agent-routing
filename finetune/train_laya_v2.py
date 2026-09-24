@@ -39,6 +39,20 @@ EPOCHS, MICRO_BATCH, GRAD_ACCUM, GROUP_SIZE = 4, 8, 8, 4
 LR_ENCODER, LR_HEAD, SIGMA_START, SIGMA_END = 2.5e-5, 1.0e-4, 0.4, 0.1
 
 
+# ------------------------------------------------------------------ memory
+
+def freeze_bottom(model, n):
+    """Freeze the embeddings and the bottom `n` encoder layers, so the optimizer state covers only the top layers
+    and the head: how a 421M fine-tune fits beside another GPU tenant. Returns the trainable parameter count."""
+    enc = model.encoder
+    for p in enc.embeddings.parameters():
+        p.requires_grad = False
+    for layer in list(enc.layers)[:n]:
+        for p in layer.parameters():
+            p.requires_grad = False
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 # ------------------------------------------------------------------ data
 
 def training_item(tok, cfg, state, q, gold_q):
@@ -171,8 +185,8 @@ def train(model, tok_pad_id, train_items, val_items, out, device, epochs=EPOCHS,
     from laya.common import proper_reward
     dtype, use_scaler = amp_policy(device.type, device.type == "cuda" and torch.cuda.is_bf16_supported())
     scaler = torch.amp.GradScaler("cuda", enabled=use_scaler)
-    enc = [p for n, p in model.named_parameters() if "encoder." in n]
-    head = [p for n, p in model.named_parameters() if "encoder." not in n]
+    enc = [p for n, p in model.named_parameters() if "encoder." in n and p.requires_grad]
+    head = [p for n, p in model.named_parameters() if "encoder." not in n and p.requires_grad]
     optimizer = torch.optim.AdamW([{"params": enc, "lr": LR_ENCODER}, {"params": head, "lr": LR_HEAD}], weight_decay=0.01)
     total_updates = max(1, (len(train_items) // (micro_batch * grad_accum)) * epochs)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=total_updates, eta_min=1e-6)
@@ -231,7 +245,7 @@ def train(model, tok_pad_id, train_items, val_items, out, device, epochs=EPOCHS,
             steps += 1
             if max_steps and steps >= max_steps:
                 break
-        val, _ = evaluate(model, val_items, tok_pad_id, device, dtype)
+        val, _ = evaluate(model, val_items, tok_pad_id, device, dtype, batch=micro_batch)
         if device.type == "cuda":
             torch.cuda.empty_cache()
         meta = {"epoch": epoch + 1, "epochs": epochs, "avg_loss": total / max(1, n), "val": val,
@@ -271,6 +285,7 @@ def main(argv=None):
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--micro-batch", type=int, default=MICRO_BATCH)
     ap.add_argument("--grad-accum", type=int, default=GRAD_ACCUM)
+    ap.add_argument("--freeze-bottom", type=int, default=0, help="freeze the embeddings and this many bottom encoder layers")
     ap.add_argument("--checkpointing", action="store_true", help="gradient checkpointing (upstream uses it on 16 GB T4s)")
     ap.add_argument("--name", default="laya-v2-routing")
     args = ap.parse_args(argv)
@@ -298,6 +313,10 @@ def main(argv=None):
         model.encoder.config.reference_compile = False
     except Exception:
         pass
+    if args.freeze_bottom:
+        n_train = freeze_bottom(model, args.freeze_bottom)
+        print(f"[train] froze embeddings + bottom {args.freeze_bottom} of {len(model.encoder.layers)} layers; "
+              f"{n_train / 1e6:.0f}M parameters trainable", flush=True)
     if args.checkpointing:
         model.encoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         model.head_checkpointing = True
@@ -315,7 +334,8 @@ def main(argv=None):
     model.load_state_dict({k: v.float() for k, v in load_file(os.path.join(chosen, "model.safetensors")).items()}, strict=True)
     model.to(device)
     _, val_out = evaluate(model, val_items, tok.pad_token_id, device,
-                          amp_policy(device.type, device.type == "cuda" and torch.cuda.is_bf16_supported())[0])
+                          amp_policy(device.type, device.type == "cuda" and torch.cuda.is_bf16_supported())[0],
+                          batch=args.micro_batch)
     temps = fit_bucket_temperatures(val_out)
     final = os.path.join(args.out, "final")
     if os.path.isdir(final):
@@ -324,6 +344,7 @@ def main(argv=None):
     cfg["temperature_by_options"] = {**cfg.get("temperature_by_options", {}), **temps}
     cfg["fine_tuned"], cfg["model_name"] = True, args.name
     cfg["training"] = {"recipe": "RLCD (upstream train_ddp.py, single-GPU port: scripts/laya/train_laya_v2.py)",
+                       "freeze_bottom": args.freeze_bottom, "max_len": cfg.get("max_len"),
                        "base": os.path.realpath(args.model_dir), "data": os.path.realpath(args.data),
                        "epochs": args.epochs, "selected_epoch": best["epoch"], "history": [
                            {"epoch": m["epoch"], "avg_loss": m["avg_loss"], "val": m["val"]} for m in metas],

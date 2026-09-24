@@ -1,0 +1,95 @@
+{
+ "tiers": [
+  "local-27b/qwen3.8-27b@off",
+  "codex/gpt-5.6-luna@high",
+  "codex/gpt-5.6-sol@high"
+ ],
+ "v2_policy": {
+  "tune_quality": 0.9610169491525424,
+  "held_quality": 0.9439655172413793,
+  "held_cost_mean": 5299.95,
+  "held_latency_p50": 6130.0
+ },
+ "arms": {
+  "A-cascade": {
+   "tau": 0.95,
+   "tune_quality": 0.9635593220338984,
+   "tune_cost_mean": 19647.183333333334,
+   "held_quality": 0.9779661016949153,
+   "held_n_scored": 59,
+   "held_cost_mean": 19535.783333333333,
+   "held_latency_p50": 15168.0,
+   "held_escalated": 58,
+   "quality_vs_policy_ci90": [
+    0.008772,
+    0.073684
+   ],
+   "cost_vs_policy_ci90": [
+    11640.625833,
+    16801.743333
+   ],
+   "auroc_held_all_cells": 0.34131205673758863,
+   "claim_met": false
+  },
+  "B-cascade": {
+   "tau": 0.9,
+   "tune_quality": 0.9661016949152542,
+   "tune_cost_mean": 20706.25,
+   "held_quality": 0.9633333333333333,
+   "held_n_scored": 60,
+   "held_cost_mean": 21501.616666666665,
+   "held_latency_p50": 16290.0,
+   "held_escalated": 60,
+   "quality_vs_policy_ci90": [
+    -0.010345,
+    0.064655
+   ],
+   "cost_vs_policy_ci90": [
+    13716.548333,
+    18692.880833
+   ],
+   "auroc_held_all_cells": 0.45606776989755715,
+   "claim_met": false
+  },
+  "B-hybrid": {
+   "tau": 0.05,
+   "tune_quality": 0.9610169491525424,
+   "tune_cost_mean": 6330.466666666666,
+   "held_quality": 0.9439655172413793,
+   "held_n_scored": 58,
+   "held_cost_mean": 5299.95,
+   "held_latency_p50": 6130.0,
+   "held_escalated": 0,
+   "quality_vs_policy_ci90": [
+    0.0,
+    0.0
+   ],
+   "cost_vs_policy_ci90": [
+    0.0,
+    0.0
+   ],
+   "auroc_held_all_cells": 0.45606776989755715,
+   "claim_met": false
+  },
+  "oracle-cascade": {
+   "tau": 0.5,
+   "tune_quality": 0.9600000000000001,
+   "tune_cost_mean": 1137.5833333333333,
+   "held_quality": 0.9541666666666667,
+   "held_n_scored": 60,
+   "held_cost_mean": 1835.65,
+   "held_latency_p50": 5354.0,
+   "held_escalated": 17,
+   "quality_vs_policy_ci90": [
+    -0.013793,
+    0.051767
+   ],
+   "cost_vs_policy_ci90": [
+    -6357.745,
+    -970.918333
+   ],
+   "auroc_held_all_cells": null,
+   "claim_met": true
+  }
+ }
+}
