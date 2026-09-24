@@ -1,0 +1,14 @@
+{
+ "t0": 1.7601518630981445,
+ "t": 1.0971082952914875,
+ "n": 149,
+ "nll_before": 0.8037289022173864,
+ "nll_after": 0.769777785130996,
+ "ece_before": 0.150055033557047,
+ "signed_gap_before": -0.15005503355704697,
+ "ece_after": 0.07125243759984222,
+ "signed_gap_after": -0.05016673650020764,
+ "outside_sdk_clamp": false,
+ "bucket": "choice:3-5",
+ "source": "r1-root-bare-{tier-240,cells-pilot}-tune.json example-led"
+}

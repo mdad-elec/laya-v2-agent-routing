@@ -1,0 +1,18 @@
+{
+ "arms": [
+  "20260923-ab2"
+ ],
+ "cells_run": "20260924-cells-120",
+ "corpus_sha256": "4927a234bbde95cd0f837a3ba293b50c024ca28801e28f6ea7378b8ea28f1679",
+ "counts": {
+  "cases": 117,
+  "decisions": 135,
+  "human_audit": 0,
+  "outcomes": 2691,
+  "private_rows_excluded": 3
+ },
+ "note": "routed is null for runs whose ledger join predates keeping the routing decision (2026-09-23).",
+ "routed_null_runs": [
+  "20260923-ab2"
+ ]
+}

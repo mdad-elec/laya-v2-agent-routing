@@ -1,0 +1,29 @@
+{
+  "source_repository": "DSI dss-platform (private); cases published with the HF dataset agent-routing-cells",
+  "source_commit": "e9b7291bf1827b454c9357d4560e0a7f24bbf2a4",
+  "source_files": [
+    {
+      "path": "scripts/ab/corpus/cells-pilot.jsonl",
+      "use": "rows with \"private\": false; id, band, prompt, check.kind"
+    },
+    {
+      "path": "scripts/ab/corpus/splits/cells-pilot.split.json",
+      "use": "tune/held assignment"
+    },
+    {
+      "path": "scripts/laya/questions.json",
+      "use": "byte copy -> data/questions.json"
+    }
+  ],
+  "scope": "Public requests, band labels, split and the frozen tier question only. No gold answers, private rows, model outputs or weights.",
+  "files": [
+    {
+      "path": "data/cases.jsonl",
+      "sha256": "1251313fae0ba0624bdb83173bcbd1aba731ea5386f0942a8199cdfd99cd66fc"
+    },
+    {
+      "path": "data/questions.json",
+      "sha256": "48dbcdd600b68fa50a7f2c54d792e29c0d5e0e9793ce09230a86abc460ca7c72"
+    }
+  ]
+}

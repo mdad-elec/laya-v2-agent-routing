@@ -1,0 +1,15 @@
+{
+  "base": "v2-policy",
+  "model_sha256": "6098ad7664ef42ddcbdbd3d3b52da500f724ad8d7038762d6c2b5439fac17bb5",
+  "temperature_by_options": {
+    "choice:3-5": 1.5184241704075447,
+    "choice:6-10": 1.0000158548355103,
+    "score:3-5": 1.2514300346374512,
+    "noul:2": 1.983399510383606,
+    "choice:11+": 0.10058280825614929,
+    "choice:2": 1.9063563346862793
+  },
+  "questions_sha256": "48dbcdd600b68fa50a7f2c54d792e29c0d5e0e9793ce09230a86abc460ca7c72",
+  "combiner_sha256": null,
+  "fit": null
+}

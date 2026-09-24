@@ -1,0 +1,34 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 300' width='640' height='300' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='Held band accuracy per rung against the judge'>
+<title>Held band accuracy per rung against the judge</title>
+<desc>Computed from scripts/ab/results/laya-v2/r1-held-*.json, scripts/ab/results/laya-v2/r3-held-root-cal-*.json, scripts/ab/results/laya-v2/r4-held-*.json, scripts/ab/results/laya-v2/judge-held.jsonl</desc>
+<line x1='170.0' y1='30.0' x2='170.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='170.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.0</text>
+<line x1='254.0' y1='30.0' x2='254.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='254.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.2</text>
+<line x1='338.0' y1='30.0' x2='338.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='338.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.4</text>
+<line x1='422.0' y1='30.0' x2='422.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='422.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.6</text>
+<line x1='506.0' y1='30.0' x2='506.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='506.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.8</text>
+<line x1='590.0' y1='30.0' x2='590.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='590.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>1.0</text>
+<rect x='170.0' y='38.0' width='236.4' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='56.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>as shipped</text>
+<text x='400.4' y='56.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.563</text>
+<rect x='170.0' y='82.0' width='264.2' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='100.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 1 · form</text>
+<text x='428.2' y='100.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.629</text>
+<rect x='170.0' y='126.0' width='264.2' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='144.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 3 · calibrated</text>
+<text x='428.2' y='144.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.629</text>
+<rect x='170.0' y='170.0' width='314.3' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='188.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 4 · v2-outcome</text>
+<text x='478.3' y='188.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.748</text>
+<rect x='170.0' y='214.0' width='336.6' height='28.0' fill='#0b6bcb' rx='2'/>
+<text x='162.0' y='232.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 4 · v2-policy</text>
+<text x='500.6' y='232.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.801</text>
+<line x1='448.1' y1='24.0' x2='448.1' y2='250.0' stroke='#8250df' stroke-width='2' stroke-dasharray='5,4'/>
+<text x='448.1' y='20.0' font-size='12' fill='#8250df' text-anchor='middle' font-weight='bold'>judge 0.662</text>
+<text x='380.0' y='286.0' font-size='12' fill='#6e7781' text-anchor='middle' font-weight='normal'>band accuracy on 151 held-out requests</text>
+</svg>

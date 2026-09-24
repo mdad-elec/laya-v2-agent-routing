@@ -1,0 +1,76 @@
+{
+  "encoder": "answerdotai/ModernBERT-large",
+  "head_layers": 2,
+  "max_len": 512,
+  "head_max_len": 192,
+  "max_prefixes": 6,
+  "act_costs": {
+    "escalate": 0.5
+  },
+  "cost_wrong_act": 3.0,
+  "amp_dtype": "bf16",
+  "model_name": "laya-v2-policy",
+  "temperature": [
+    1.6369030475616455,
+    1.2514300346374512,
+    1.983399510383606
+  ],
+  "temperature_by_options": {
+    "choice:3-5": 1.5184241704075447,
+    "choice:6-10": 1.0000158548355103,
+    "score:3-5": 1.2514300346374512,
+    "noul:2": 1.983399510383606,
+    "choice:11+": 0.10058280825614929,
+    "choice:2": 1.9063563346862793
+  },
+  "training": {
+    "recipe": "RLCD (upstream train_ddp.py, single-GPU port: scripts/laya/train_laya_v2.py)",
+    "base": "base-root",
+    "data": "v2-policy",
+    "epochs": 4,
+    "selected_epoch": 4,
+    "history": [
+      {
+        "epoch": 1,
+        "avg_loss": 0.5375647854401869,
+        "val": {
+          "acc": 0.7142857142857143,
+          "soft_acc": 0.6487795793260406,
+          "n": 28
+        }
+      },
+      {
+        "epoch": 2,
+        "avg_loss": 0.19384946339372275,
+        "val": {
+          "acc": 0.7857142857142857,
+          "soft_acc": 0.6587408439341883,
+          "n": 28
+        }
+      },
+      {
+        "epoch": 3,
+        "avg_loss": 0.11549604522145313,
+        "val": {
+          "acc": 0.8214285714285714,
+          "soft_acc": 0.6791981455652515,
+          "n": 28
+        }
+      },
+      {
+        "epoch": 4,
+        "avg_loss": 0.07079047799686303,
+        "val": {
+          "acc": 0.8214285714285714,
+          "soft_acc": 0.6762856658146641,
+          "n": 28
+        }
+      }
+    ],
+    "fitted_temperatures": {
+      "choice:3-5": 1.5184241704075447
+    },
+    "hours": 0.096
+  },
+  "fine_tuned": true
+}

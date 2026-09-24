@@ -1,0 +1,6 @@
+[train] 827 train / 28 val sequences (skipped 0 whose markers did not fit 512/192)
+[train] epoch 1/4 loss 0.5376 val acc 0.714 soft 0.649 (83.6s)
+[train] epoch 2/4 loss 0.1938 val acc 0.786 soft 0.659 (76.8s)
+[train] epoch 3/4 loss 0.1155 val acc 0.821 soft 0.679 (80.5s)
+[train] epoch 4/4 loss 0.0708 val acc 0.821 soft 0.676 (78.8s)
+[train] selected epoch 4 (val acc 0.821); temperatures {'choice:3-5': 1.5184241704075447}; wrote ckpt/v2-policy/final

@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "provenance": "Hand-written English requests with a known difficulty band, public rows only (private rows withheld). Labels follow the quoted policy; not independently multi-annotated.",
+  "cases": 117,
+  "bands": {
+    "trivial": 30,
+    "easy": 30,
+    "medium": 29,
+    "hard": 28
+  },
+  "expected": {
+    "small": 60,
+    "medium": 29,
+    "powerful": 28
+  },
+  "splits": {
+    "tune": 59,
+    "held": 58
+  },
+  "check_kinds": {
+    "exact": 29,
+    "python": 21,
+    "rubric": 57,
+    "sql": 10
+  },
+  "cases_sha256": "6033ab16d1cd9a7bc46d839dd438e437b9870d009114687d124d294b7cea4728",
+  "requests_sha256": "a192100531ac0d4abd4c8c13a3c5d3032f3f4f19d63a91a2e9c559ee609cf4e9",
+  "questions_sha256": "48dbcdd600b68fa50a7f2c54d792e29c0d5e0e9793ce09230a86abc460ca7c72",
+  "band_to_tier": {
+    "trivial": "small",
+    "easy": "small",
+    "medium": "medium",
+    "hard": "powerful"
+  },
+  "policy": "tier: the cheapest tier that can answer the request well. small: a lookup, a greeting, a format change, a short rewrite, a one-line answer. medium: several steps, ordinary code, a summary that needs judgement, a routine explanation. powerful: long multi-step reasoning, specialist knowledge, system design, or consequences in money, law, health or safety.",
+  "policy_attribution": "glukicov/laya_router data/README.md @ a2278d969067 (Apache-2.0)",
+  "option_order": [
+    "powerful",
+    "medium",
+    "small"
+  ],
+  "quality_repeat": 0,
+  "repetitions": 3,
+  "latency": "All successful timed requests across repetitions, excluding the one warmup request; errors reported separately and kept in quality denominators."
+}

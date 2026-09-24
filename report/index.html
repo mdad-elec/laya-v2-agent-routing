@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laya-v2 routing report</title>
+<style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--rule:#d0d7de;--soft:#f6f8fa;--accent:#0b6bcb;--fig:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--rule:#30363d;--soft:#161b22;--accent:#4493f8;--fig:#f6f8fa}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--rule:#30363d;--soft:#161b22;--accent:#4493f8;--fig:#f6f8fa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.9rem;line-height:1.25;margin:0 0 .5rem}
+h2{font-size:1.3rem;margin:2.2rem 0 .6rem;padding-top:.6rem;border-top:1px solid var(--rule)}
+p,li{max-width:72ch}
+a{color:var(--accent)}
+code{font:.88em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:.1em .35em;border-radius:4px;overflow-wrap:anywhere}
+em{color:var(--muted)}
+.table{overflow-x:auto;margin:1rem 0;border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:.45rem .6rem;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+tr:last-child td{border-bottom:0}
+figure{margin:1.4rem 0;padding:12px;background:var(--fig);border:1px solid var(--rule);border-radius:8px}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
+figcaption{color:#59636e;font-size:.85rem;margin-top:.4rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Routing an AI agent's turn with a System-One model: Laya-v2 against an LLM judge</h1>
+<p><em>DSI dss-platform — 2026-09-24. Branch <code>feat/router-laya-ab</code>. Pre-registration: <code>scripts/laya/PREREG.md</code>. Every number below is read from a file under <code>scripts/ab/results/</code>; the file is named beside it.</em></p>
+<h2>Abstract</h2>
+<p>An agent platform routes each turn of an agent to a model and a reasoning effort. Today's router asks a 27B model for a JSON verdict (p_solve, capability boundary) before every turn. We asked whether an open <strong>System-One</strong> decision model — Laya, a 421M ModernBERT-large encoder that answers a typed question in one forward pass with no generated tokens — can make that decision better. A first live A/B said no: Laya lost to the judge. We found three defects of ours in every number of that A/B (the wrong checkpoint served, a wrapped state shown to the brain, and the options posted in alphabetical order), fixed them, and climbed a pre-registered four-rung ladder, each rung read once on a frozen held-out split. Zero-shot fixes recover 6.6 points (0.563 → 0.629 band accuracy) but still trail the judge (0.662). A fine-tune of Laya on the tune split's 119 policy-labelled requests plus 708 filtered paraphrases reaches <strong>0.801</strong> — <strong>+0.139 over the judge, exact McNemar p = 0.0027</strong> — and, replayed over 2,760 graded answers from 23 (model × effort) cells, raises answer quality from 0.887 to <strong>0.944</strong> (90% CI of the difference [+0.016, +0.100]) at the same median cost, with no generated decision tokens. The band-accuracy margin comes from the borrowed tier rows; on this estate's own asks the two tie on band accuracy, and Laya-v2 wins on quality because it underspends less. Two findings go the other way: the effort question is useless on these asks (the lowest effort suffices on 112 of 120), and the fine-tuned router does not transfer to RouterBench, whose label is "which model solved it", not "which tier the policy wants".</p>
+<h2>1. Setting</h2>
+<ul><li><strong>The platform's menu.</strong> 8 models, 23 measured (model × effort) cells: Claude Opus 5 / Fable 5 / Sonnet 5 at low, high and max effort; Codex GPT-6-astra, GPT-5.6-sol / terra / luna at their lowest, high and max; a local Qwen 3.8 27B with thinking off and on (<code>results/20260924-cells-120/report.md</code>).</li><li><strong>The decision.</strong> A price band (<code>small / medium / powerful</code>) for the turn; a measured cell frontier then picks the cell (spec <code>docs/superpowers/specs/2026-09-23-dss-auto-effort-cells-design.md</code>).</li><li><strong>The incumbent.</strong> <code>CLASSIFIER_PROMPT</code> on the local 27B, JSON verdict mapped to two tiers by a threshold rule; for a fair three-way comparison a one-parameter adapter splits the efficient tier, its threshold fitted on tune (<code>judge-adapter.json</code>, t_small = 0.96).</li><li><strong>The challenger.</strong> Laya (convaiinnovations/laya, Apache-2.0), asked one <code>choice</code> question whose option descriptions are the prompt.</li></ul>
+<h2>2. Related work</h2>
+<p>RouterBench (Hu et al., <a href="https://arxiv.org/abs/2403.12031">arXiv 2403.12031</a>) evaluates routers on precomputed outcomes on a cost-quality plane and defines AIQ; we use both. RouteLLM (Ong et al., <a href="https://arxiv.org/abs/2406.18665">arXiv 2406.18665</a>) learns strong/weak routers from preference data. FrugalGPT (Chen et al., <a href="https://arxiv.org/abs/2305.05176">arXiv 2305.05176</a>) cascades models; Hybrid LLM (Ding et al., <a href="https://arxiv.org/abs/2404.14618">arXiv 2404.14618</a>) routes by predicted difficulty between an edge and a cloud model. System-One decision models (TypeSafe's hosted Jev; the open Laya and its RLCD fine-tuning recipe) answer typed questions in one pass; <code>glukicov/laya_router</code> measured Laya as a three-tier router (0.600 on 180 requests) — our harness reproduces their numbers to three decimals (<code>scripts/ab/corpus/ATTRIBUTION.md</code>).</p>
+<h2>3. Method</h2>
+<p><strong>Corpora.</strong> 240 tier-labelled requests (180 borrowed, 60 our own, unaudited and never in a headline), and a pilot of 120 checkable asks (48 + 72 drafted from the written band policy and validated in code: every gold passes its check, every python/sql check has a plausible wrong answer that must fail, no near duplicates, no private terms — <code>validate_corpus.py</code>). <strong>Splits are frozen files</strong> (<code>scripts/ab/corpus/splits/</code>): the day the corpus grew, the old run-time draw would have moved held-out asks into tuning.</p>
+<p><strong>Pre-registration</strong> (<code>scripts/laya/PREREG.md</code>, written before any measurement). H1: band accuracy − judge ≥ 0.05 and one-sided exact McNemar p &lt; 0.05. H2: answer quality on the same menu, non-inferior (−0.02, 90% bootstrap CI &gt; −0.05). H3 decision latency, H4 cost, H5 off-local rate, H6 an effort question. One held-out read per rung, ledgered (<code>results/laya-v2/heldout-ledger.md</code>). Two amendments, both before the thing they govern was measured (H6's bar; the serving form after rung 1).</p>
+<p><strong>Quality without new calls.</strong> Every pilot ask was answered by all 23 cells and graded — machine checks where the ask has one, else a blind cross-family panel. A decider's quality on a menu is the graded score of the cell the menu resolves its band to (the RouterBench method); a Python port of the gateway's cell chooser, proven to reproduce the gateway's own picks, supplies the menus (<code>scripts/ab/menu.py</code>).</p>
+<h2>4. The three defects</h2>
+<div class="table"><table><tr><th>defect</th><th>how it was found</th><th>cost (held band accuracy)</th></tr><tr><td>The sidecar served <code>typed-decisions</code>; the measured decision was the root</td><td><code>/health</code> on the Spark; <code>lib-arm.sh</code> default</td><td>—</td></tr><tr><td>The router showed the brain its session and every servable rung name</td><td>captured the bytes off the wire (<code>LAYA_CAPTURE_PATH</code>, <code>fixtures/wire-state.json</code>)</td><td>root: 0.711 bare vs 0.342 wrapped on tune</td></tr><tr><td>The options went out <code>medium, powerful, small</code></td><td>the capture; <code>serde_json</code> without <code>preserve_order</code> sorts every <code>Value</code> map — and the event store's JSONB sorts too</td><td>inside Ship 0's 8-point order effect</td></tr></table></div>
+<p>Together: 0.563 as shipped → 0.629 fixed (<code>r1-held.md</code>). The fixes are now invariants in code: the schema is an ordered content type stored as arrays, validated at admission; the brain sees <code>{"request": …}</code>; the record pins the weights' sha256 and the probe refuses a different — or unreported — checkpoint (<code>scripts/e2e/h8-router-laya-v2.sh</code>).</p>
+<h2>5. The ladder</h2>
+<div class="table"><table><tr><th>rung</th><th>change</th><th>tune</th><th>held band accuracy</th><th>adopted?</th></tr><tr><td>—</td><td>as shipped</td><td>0.557</td><td>0.563</td><td>—</td></tr><tr><td>R1</td><td>root, bare state, example-led, measured order</td><td>0.711</td><td>0.629</td><td>yes</td></tr><tr><td>R2</td><td>49 wordings × orders × instructions × keys; 5-question schema; logistic combiner</td><td>0.711 (same config)</td><td>— (unchanged, not re-read)</td><td>no improvement</td></tr><tr><td>R3</td><td>temperature 1.76 → 1.10</td><td>ECE 0.150 → 0.071</td><td>0.629, ECE 0.122 → 0.112</td><td>no (bar 0.08)</td></tr><tr><td><strong>R4</strong></td><td><strong>RLCD fine-tune (v2-policy)</strong></td><td>val 0.821</td><td><strong>0.801</strong></td><td><strong>yes</strong></td></tr><tr><td>R4</td><td>fine-tune on 0.5 label + 0.5 measured outcome (v2-outcome)</td><td>val 0.821</td><td>0.748</td><td>second variant</td></tr></table></div>
+<p>(<code>r1-report.md</code>, <code>r2-report.md</code>, <code>r3-report.md</code>, <code>r4-report.md</code>.) The zero-shot fixes close a third of the distance to the judge; the fine-tune is what passes it — as upstream's card says, Laya is "a fast base to specialise, not a zero-shot decision engine". Training took ~80 s an epoch on an RTX 2080 Ti.</p>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 300' width='640' height='300' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='Held band accuracy per rung against the judge'>
+<title>Held band accuracy per rung against the judge</title>
+<desc>Computed from scripts/ab/results/laya-v2/r1-held-*.json, scripts/ab/results/laya-v2/r3-held-root-cal-*.json, scripts/ab/results/laya-v2/r4-held-*.json, scripts/ab/results/laya-v2/judge-held.jsonl</desc>
+<line x1='170.0' y1='30.0' x2='170.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='170.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.0</text>
+<line x1='254.0' y1='30.0' x2='254.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='254.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.2</text>
+<line x1='338.0' y1='30.0' x2='338.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='338.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.4</text>
+<line x1='422.0' y1='30.0' x2='422.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='422.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.6</text>
+<line x1='506.0' y1='30.0' x2='506.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='506.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.8</text>
+<line x1='590.0' y1='30.0' x2='590.0' y2='250.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='590.0' y='266.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>1.0</text>
+<rect x='170.0' y='38.0' width='236.4' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='56.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>as shipped</text>
+<text x='400.4' y='56.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.563</text>
+<rect x='170.0' y='82.0' width='264.2' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='100.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 1 · form</text>
+<text x='428.2' y='100.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.629</text>
+<rect x='170.0' y='126.0' width='264.2' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='144.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 3 · calibrated</text>
+<text x='428.2' y='144.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.629</text>
+<rect x='170.0' y='170.0' width='314.3' height='28.0' fill='#6e7781' rx='2'/>
+<text x='162.0' y='188.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 4 · v2-outcome</text>
+<text x='478.3' y='188.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.748</text>
+<rect x='170.0' y='214.0' width='336.6' height='28.0' fill='#0b6bcb' rx='2'/>
+<text x='162.0' y='232.0' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 4 · v2-policy</text>
+<text x='500.6' y='232.0' font-size='12' fill='#ffffff' text-anchor='end' font-weight='bold'>0.801</text>
+<line x1='448.1' y1='24.0' x2='448.1' y2='250.0' stroke='#8250df' stroke-width='2' stroke-dasharray='5,4'/>
+<text x='448.1' y='20.0' font-size='12' fill='#8250df' text-anchor='middle' font-weight='bold'>judge 0.662</text>
+<text x='380.0' y='286.0' font-size='12' fill='#6e7781' text-anchor='middle' font-weight='normal'>band accuracy on 151 held-out requests</text>
+</svg><figcaption>Figure 1. Held band accuracy per rung on the 151 headline held-out requests; the dashed line is the judge. Computed from the held files, not copied from the reports.</figcaption></figure>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 380' width='420' height='380' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='Reliability of the band probability: rung 1 against v2-policy'>
+<title>Reliability of the band probability: rung 1 against v2-policy</title>
+<desc>Computed from scripts/ab/results/laya-v2/r1-held-candidate-root-bare-example-led-*.json, scripts/ab/results/laya-v2/r4-held-v2-policy-*.json</desc>
+<line x1='60.0' y1='20.0' x2='60.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='320.0' x2='380.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='60.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.0</text>
+<text x='54.0' y='324.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.0</text>
+<line x1='124.0' y1='20.0' x2='124.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='260.0' x2='380.0' y2='260.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='124.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.2</text>
+<text x='54.0' y='264.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.2</text>
+<line x1='188.0' y1='20.0' x2='188.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='200.0' x2='380.0' y2='200.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='188.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.4</text>
+<text x='54.0' y='204.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.4</text>
+<line x1='252.0' y1='20.0' x2='252.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='140.0' x2='380.0' y2='140.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='252.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.6</text>
+<text x='54.0' y='144.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.6</text>
+<line x1='316.0' y1='20.0' x2='316.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='80.0' x2='380.0' y2='80.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='316.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0.8</text>
+<text x='54.0' y='84.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.8</text>
+<line x1='380.0' y1='20.0' x2='380.0' y2='320.0' stroke='#d0d7de' stroke-width='1'/>
+<line x1='60.0' y1='20.0' x2='380.0' y2='20.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='380.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>1.0</text>
+<text x='54.0' y='24.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>1.0</text>
+<line x1='60.0' y1='320.0' x2='380.0' y2='20.0' stroke='#6e7781' stroke-width='1' stroke-dasharray='4,4'/>
+<path d='M180.8,140.0 L205.9,205.7 L236.0,98.6 L263.4,140.0 L299.1,60.0 L329.2,20.0 L358.8,120.0' fill='none' stroke='#bf5b04' stroke-width='2'/>
+<circle cx='180.8' cy='140.0' r='3.25' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='205.9' cy='205.7' r='7.25' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='236.0' cy='98.6' r='7.25' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='263.4' cy='140.0' r='5.75' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='299.1' cy='60.0' r='3.875' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='329.2' cy='20.0' r='3.125' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<circle cx='358.8' cy='120.0' r='2.375' fill='#bf5b04' stroke='none' stroke-width='1.5'/>
+<path d='M212.0,191.4 L239.0,140.0 L265.2,155.0 L302.6,49.6 L323.3,51.6' fill='none' stroke='#0b6bcb' stroke-width='2'/>
+<circle cx='212.0' cy='191.4' r='2.875' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<circle cx='239.0' cy='140.0' r='3.875' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<circle cx='265.2' cy='155.0' r='4.5' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<circle cx='302.6' cy='49.6' r='8' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<circle cx='323.3' cy='51.6' r='6.75' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<text x='70.0' y='36.0' font-size='12' fill='#bf5b04' text-anchor='start' font-weight='bold'>rung 1 (zero-shot)</text>
+<text x='70.0' y='52.0' font-size='12' fill='#0b6bcb' text-anchor='start' font-weight='bold'>v2-policy (fine-tuned)</text>
+<text x='220.0' y='356.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>stated P(band), bins of ≥ 3 rows; dot size = rows</text>
+</svg><figcaption>Figure 3. Reliability on the same rows: the stated probability of the chosen band against how often it was right. The diagonal is perfect calibration.</figcaption></figure>
+<h2>6. Results against the pre-registration (<code>results/laya-v2/VERDICT.md</code>)</h2>
+<div class="table"><table><tr><th></th><th>judge</th><th>Laya-v2-policy</th><th></th></tr><tr><td><strong>H1</strong> held band accuracy (151)</td><td>0.662</td><td><strong>0.801</strong></td><td>+0.139, McNemar 37 vs 16, p = 0.0027 — <strong>met</strong></td></tr><tr><td>underspend / overspend</td><td>—</td><td>0.119 / 0.079</td><td>rung 1: 0.238 / 0.132</td></tr><tr><td><strong>H2</strong> quality, arm C's cell menu (60)</td><td>0.887</td><td><strong>0.944</strong></td><td>CI [+0.016, +0.100] — <strong>met, superior</strong></td></tr><tr><td><strong>H2</strong> quality, models-only ladder (60)</td><td>0.813</td><td><strong>0.838</strong></td><td>CI [+0.005, +0.046] — <strong>met, superior</strong></td></tr><tr><td>cost p50 per turn (cell menu)</td><td>220 µUSD</td><td>218 µUSD</td><td>same</td></tr><tr><td><strong>H4</strong> decision tokens</td><td>57 out + 180 in</td><td>0 out + ~120 in</td><td><strong>met</strong></td></tr><tr><td>decision latency</td><td>p50 2.3 s / p95 3.8 s (27B, GPU)</td><td>p50 0.59 s / p95 0.82 s (CPU, contended)</td><td><strong>H3 on the Spark not measured</strong></td></tr><tr><td><strong>H6</strong> effort question</td><td>—</td><td>—</td><td><strong>dropped</strong>: constant <code>minimal</code> is 0.917</td></tr></table></div>
+<p><strong>Where H1's margin lives.</strong> Split by corpus, the held read is 0.857 against 0.637 on the 91 borrowed tier rows (26 vs 6 discordant, p = 0.0005), and 0.717 against 0.700 on the 60 pilot asks (11 vs 10, not shown apart). H1 was pre-registered on the pooled 151 and is met there; on this estate's own asks Laya-v2 ties the judge on band accuracy. It still wins on quality there (H2), because the judge's errors are mostly underspends (15 of 60, against Laya-v2's 9; overspends 3 against 8), and an underspend costs the answer.</p>
+<p>Perfect band labels score 0.934 on the cell menu; the best graded cell per ask 0.998. Laya-v2 is at the label ceiling, and the remaining distance to the oracle is the menu's, not the decider's.</p>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360' width='640' height='360' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='Answer quality against median cost per decider, on the cell menu'>
+<title>Answer quality against median cost per decider, on the cell menu</title>
+<desc>Computed from scripts/ab/results/laya-v2/factorial.json</desc>
+<line x1='70.0' y1='20.0' x2='70.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='70.0' y='316.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>0</text>
+<line x1='200.0' y1='20.0' x2='200.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='200.0' y='316.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>100</text>
+<line x1='330.0' y1='20.0' x2='330.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='330.0' y='316.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>200</text>
+<line x1='460.0' y1='20.0' x2='460.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='460.0' y='316.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>300</text>
+<line x1='590.0' y1='20.0' x2='590.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='590.0' y='316.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>400</text>
+<line x1='70.0' y1='300.0' x2='590.0' y2='300.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='304.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.84</text>
+<line x1='70.0' y1='253.3' x2='590.0' y2='253.3' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='257.3' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.86</text>
+<line x1='70.0' y1='206.7' x2='590.0' y2='206.7' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='210.7' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.88</text>
+<line x1='70.0' y1='160.0' x2='590.0' y2='160.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='164.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.90</text>
+<line x1='70.0' y1='113.3' x2='590.0' y2='113.3' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='117.3' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.92</text>
+<line x1='70.0' y1='66.7' x2='590.0' y2='66.7' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='70.7' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.94</text>
+<line x1='70.0' y1='20.0' x2='590.0' y2='20.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='64.0' y='24.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.96</text>
+<circle cx='356.6' cy='189.2' r='6' fill='#8250df' stroke='none' stroke-width='1.5'/>
+<text x='365.6' y='193.2' font-size='12' fill='#8250df' text-anchor='start' font-weight='normal'>judge 0.887</text>
+<circle cx='469.8' cy='274.6' r='6' fill='#6e7781' stroke='none' stroke-width='1.5'/>
+<text x='460.8' y='278.6' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>rung 1 0.851</text>
+<circle cx='558.1' cy='214.3' r='6' fill='#6e7781' stroke='none' stroke-width='1.5'/>
+<text x='549.1' y='218.3' font-size='12' fill='#1f2328' text-anchor='end' font-weight='normal'>Laya as shipped 0.877</text>
+<circle cx='151.9' cy='216.3' r='6' fill='#6e7781' stroke='none' stroke-width='1.5'/>
+<text x='160.9' y='220.3' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>v2-outcome 0.876</text>
+<circle cx='353.4' cy='57.4' r='6' fill='#0b6bcb' stroke='none' stroke-width='1.5'/>
+<text x='362.4' y='61.4' font-size='12' fill='#0b6bcb' text-anchor='start' font-weight='bold'>v2-policy 0.944</text>
+<circle cx='309.9' cy='80.3' r='6' fill='#6e7781' stroke='none' stroke-width='1.5'/>
+<text x='318.9' y='84.3' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>perfect labels 0.934</text>
+<text x='330.0' y='336.0' font-size='11' fill='#6e7781' text-anchor='middle' font-weight='normal'>median cost per turn, µUSD; quality = graded score of the cell the decision picks (60 held asks)</text>
+</svg><figcaption>Figure 2. Answer quality against median cost per turn on the cell menu, 60 held asks. Up and to the left is better.</figcaption></figure>
+<h2>7. What went the other way</h2>
+<ul><li><strong>Effort barely matters for correctness here.</strong> For a given model, the lowest measured effort is within 0.05 of that model's best on 112 of 120 asks (<code>effort_labels.py</code>). Effort is a time-and-cost lever; the cell frontier already prices it.</li><li><strong>The menu measured on 120 asks, under the spec's default weights, collapses to the models-only ladder</strong> — <code>medium</code> goes to the local 27B with thinking off (0.67 quality on medium asks) because time and cost carry 60% of the weight. That is a policy-weight finding for the owner, not a router defect.</li><li><strong>RouterBench.</strong> On 2,451 test prompts of six tasks neither zero-shot nor fine-tuned Laya reaches the hull of the eleven single models (AIQ 0.34–0.66 against 0.64–0.93, <code>routerbench.md</code>). Laya-v2 learned a spending policy; RouterBench's label is solvability. A RouterBench router would be trained on its own 70%, as the paper's are.</li></ul>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 300' width='640' height='300' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='RouterBench AIQ per task: the single-model hull against Laya'>
+<title>RouterBench AIQ per task: the single-model hull against Laya</title>
+<desc>Computed from scripts/ab/results/laya-v2/routerbench.json</desc>
+<line x1='50.0' y1='240.0' x2='610.0' y2='240.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='244.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.0</text>
+<line x1='50.0' y1='198.0' x2='610.0' y2='198.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='202.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.2</text>
+<line x1='50.0' y1='156.0' x2='610.0' y2='156.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='160.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.4</text>
+<line x1='50.0' y1='114.0' x2='610.0' y2='114.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='118.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.6</text>
+<line x1='50.0' y1='72.0' x2='610.0' y2='72.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='76.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.8</text>
+<line x1='50.0' y1='30.0' x2='610.0' y2='30.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='34.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>1.0</text>
+<rect x='60.0' y='86.4' width='21.4' height='153.6' fill='#6e7781' rx='2'/>
+<rect x='84.4' y='154.0' width='21.4' height='86.0' fill='#bf5b04' rx='2'/>
+<rect x='108.9' y='168.2' width='21.4' height='71.8' fill='#0b6bcb' rx='2'/>
+<text x='96.7' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>mmlu</text>
+<rect x='153.3' y='76.3' width='21.4' height='163.7' fill='#6e7781' rx='2'/>
+<rect x='177.8' y='134.0' width='21.4' height='106.0' fill='#bf5b04' rx='2'/>
+<rect x='202.2' y='117.1' width='21.4' height='122.9' fill='#0b6bcb' rx='2'/>
+<text x='190.0' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>hellaswag</text>
+<rect x='246.7' y='104.7' width='21.4' height='135.3' fill='#6e7781' rx='2'/>
+<rect x='271.1' y='125.6' width='21.4' height='114.4' fill='#bf5b04' rx='2'/>
+<rect x='295.6' y='118.5' width='21.4' height='121.5' fill='#0b6bcb' rx='2'/>
+<text x='283.3' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>gsm8k</text>
+<rect x='340.0' y='45.3' width='21.4' height='194.7' fill='#6e7781' rx='2'/>
+<rect x='364.4' y='172.9' width='21.4' height='67.1' fill='#bf5b04' rx='2'/>
+<rect x='388.9' y='102.1' width='21.4' height='137.9' fill='#0b6bcb' rx='2'/>
+<text x='376.7' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>arc</text>
+<rect x='433.3' y='89.8' width='21.4' height='150.2' fill='#6e7781' rx='2'/>
+<rect x='457.8' y='137.4' width='21.4' height='102.6' fill='#bf5b04' rx='2'/>
+<rect x='482.2' y='103.3' width='21.4' height='136.7' fill='#0b6bcb' rx='2'/>
+<text x='470.0' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>winogrande</text>
+<rect x='526.7' y='92.7' width='21.4' height='147.3' fill='#6e7781' rx='2'/>
+<rect x='551.1' y='134.5' width='21.4' height='105.5' fill='#bf5b04' rx='2'/>
+<rect x='575.6' y='134.4' width='21.4' height='105.6' fill='#0b6bcb' rx='2'/>
+<text x='563.3' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>mbpp</text>
+<rect x='50.0' y='6.0' width='12.0' height='12.0' fill='#6e7781' rx='2'/>
+<text x='68.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>zero-router hull</text>
+<rect x='220.0' y='6.0' width='12.0' height='12.0' fill='#bf5b04' rx='2'/>
+<text x='238.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>Laya root</text>
+<rect x='390.0' y='6.0' width='12.0' height='12.0' fill='#0b6bcb' rx='2'/>
+<text x='408.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>Laya v2-policy</text>
+<text x='330.0' y='276.0' font-size='12' fill='#6e7781' text-anchor='middle' font-weight='normal'>AIQ: area under the non-decreasing convex hull of the cost-quality curve</text>
+</svg><figcaption>Figure 4. RouterBench AIQ per task. Neither Laya reaches the hull of the eleven single models on any task.</figcaption></figure>
+<ul><li><strong>Answer quality alone rewards overspend.</strong> Sending everything to the strongest cell beats perfect labels on quality; every quality number here is printed beside its cost.</li></ul>
+<h2>8. Limitations</h2>
+<p>One annotator's policy labels (blind ceiling ~0.82 on the borrowed rows; Laya-v2 sits at 0.801). The panel is not yet human-calibrated (the blind audit slice is prepared, not graded). 151 and 60 held rows: ±0.06–0.08. One estate's menu, English only, list prices on subscription seats. The 60 DSS-domain labels are unaudited and excluded from every headline. Two held pilot asks are private, so a reproduction from the public dataset has 149 H1 rows and 58 H2 asks. Decision latency on the Spark's GPU was not re-measured for the fine-tune; on an RTX 2080 Ti workstation's GPU, shared with a rendering service, it was p50 125 ms and p95 150 ms over the LAN (20 decisions). In a long conversation the gateway's session hold keeps a cheap cell after Laya names <code>powerful</code>; the replay scores fresh sessions and does not see it.</p>
+<h2>9. Reproduce</h2>
+<p>Corpus, splits, pre-registration and every script are in the repository; the run directories are named in each report. <code>python3 -m unittest discover -s scripts/ab</code> and <code>scripts/laya</code> run the instruments' tests; <code>scripts/e2e/h6/h7/h8</code> the platform's. The public package — cases, measured outcomes, the fine-tuned checkpoint and a model-free audit — is prepared for Hugging Face (<code>scripts/publish/</code>) and for Laya's community benchmarks (<code>research/benchmarks/agent_routing/</code>).</p>
+</main>
+</body>
+</html>

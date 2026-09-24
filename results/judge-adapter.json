@@ -1,0 +1,8 @@
+{
+ "t_small": 0.96,
+ "tune_band_accuracy": 0.6644295302013423,
+ "n": 149,
+ "base": 0.5,
+ "step": 0.1,
+ "fitted_on": "judge-tune.jsonl"
+}

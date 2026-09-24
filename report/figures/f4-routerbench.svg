@@ -1,0 +1,47 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 300' width='640' height='300' font-family='system-ui,-apple-system,Segoe UI,sans-serif' role='img' aria-label='RouterBench AIQ per task: the single-model hull against Laya'>
+<title>RouterBench AIQ per task: the single-model hull against Laya</title>
+<desc>Computed from scripts/ab/results/laya-v2/routerbench.json</desc>
+<line x1='50.0' y1='240.0' x2='610.0' y2='240.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='244.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.0</text>
+<line x1='50.0' y1='198.0' x2='610.0' y2='198.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='202.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.2</text>
+<line x1='50.0' y1='156.0' x2='610.0' y2='156.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='160.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.4</text>
+<line x1='50.0' y1='114.0' x2='610.0' y2='114.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='118.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.6</text>
+<line x1='50.0' y1='72.0' x2='610.0' y2='72.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='76.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>0.8</text>
+<line x1='50.0' y1='30.0' x2='610.0' y2='30.0' stroke='#d0d7de' stroke-width='1'/>
+<text x='44.0' y='34.0' font-size='11' fill='#6e7781' text-anchor='end' font-weight='normal'>1.0</text>
+<rect x='60.0' y='86.4' width='21.4' height='153.6' fill='#6e7781' rx='2'/>
+<rect x='84.4' y='154.0' width='21.4' height='86.0' fill='#bf5b04' rx='2'/>
+<rect x='108.9' y='168.2' width='21.4' height='71.8' fill='#0b6bcb' rx='2'/>
+<text x='96.7' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>mmlu</text>
+<rect x='153.3' y='76.3' width='21.4' height='163.7' fill='#6e7781' rx='2'/>
+<rect x='177.8' y='134.0' width='21.4' height='106.0' fill='#bf5b04' rx='2'/>
+<rect x='202.2' y='117.1' width='21.4' height='122.9' fill='#0b6bcb' rx='2'/>
+<text x='190.0' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>hellaswag</text>
+<rect x='246.7' y='104.7' width='21.4' height='135.3' fill='#6e7781' rx='2'/>
+<rect x='271.1' y='125.6' width='21.4' height='114.4' fill='#bf5b04' rx='2'/>
+<rect x='295.6' y='118.5' width='21.4' height='121.5' fill='#0b6bcb' rx='2'/>
+<text x='283.3' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>gsm8k</text>
+<rect x='340.0' y='45.3' width='21.4' height='194.7' fill='#6e7781' rx='2'/>
+<rect x='364.4' y='172.9' width='21.4' height='67.1' fill='#bf5b04' rx='2'/>
+<rect x='388.9' y='102.1' width='21.4' height='137.9' fill='#0b6bcb' rx='2'/>
+<text x='376.7' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>arc</text>
+<rect x='433.3' y='89.8' width='21.4' height='150.2' fill='#6e7781' rx='2'/>
+<rect x='457.8' y='137.4' width='21.4' height='102.6' fill='#bf5b04' rx='2'/>
+<rect x='482.2' y='103.3' width='21.4' height='136.7' fill='#0b6bcb' rx='2'/>
+<text x='470.0' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>winogrande</text>
+<rect x='526.7' y='92.7' width='21.4' height='147.3' fill='#6e7781' rx='2'/>
+<rect x='551.1' y='134.5' width='21.4' height='105.5' fill='#bf5b04' rx='2'/>
+<rect x='575.6' y='134.4' width='21.4' height='105.6' fill='#0b6bcb' rx='2'/>
+<text x='563.3' y='256.0' font-size='12' fill='#1f2328' text-anchor='middle' font-weight='normal'>mbpp</text>
+<rect x='50.0' y='6.0' width='12.0' height='12.0' fill='#6e7781' rx='2'/>
+<text x='68.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>zero-router hull</text>
+<rect x='220.0' y='6.0' width='12.0' height='12.0' fill='#bf5b04' rx='2'/>
+<text x='238.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>Laya root</text>
+<rect x='390.0' y='6.0' width='12.0' height='12.0' fill='#0b6bcb' rx='2'/>
+<text x='408.0' y='16.0' font-size='12' fill='#1f2328' text-anchor='start' font-weight='normal'>Laya v2-policy</text>
+<text x='330.0' y='276.0' font-size='12' fill='#6e7781' text-anchor='middle' font-weight='normal'>AIQ: area under the non-decreasing convex hull of the cost-quality curve</text>
+</svg>

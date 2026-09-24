@@ -1,0 +1,49 @@
+{
+  "recipe": "RLCD (upstream train_ddp.py, single-GPU port: scripts/laya/train_laya_v2.py)",
+  "base": "base-root",
+  "data": "v2-outcome",
+  "epochs": 4,
+  "selected_epoch": 3,
+  "history": [
+    {
+      "epoch": 1,
+      "avg_loss": 0.6987947951192441,
+      "val": {
+        "acc": 0.75,
+        "soft_acc": 0.5808501293457187,
+        "n": 28
+      }
+    },
+    {
+      "epoch": 2,
+      "avg_loss": 0.3851450925000048,
+      "val": {
+        "acc": 0.75,
+        "soft_acc": 0.6237951825354989,
+        "n": 28
+      }
+    },
+    {
+      "epoch": 3,
+      "avg_loss": 0.3235862362356002,
+      "val": {
+        "acc": 0.8214285714285714,
+        "soft_acc": 0.6325491238721774,
+        "n": 28
+      }
+    },
+    {
+      "epoch": 4,
+      "avg_loss": 0.4126484538765921,
+      "val": {
+        "acc": 0.7857142857142857,
+        "soft_acc": 0.6288223945096068,
+        "n": 28
+      }
+    }
+  ],
+  "fitted_temperatures": {
+    "choice:3-5": 1.2248780874244038
+  },
+  "hours": 0.09
+}

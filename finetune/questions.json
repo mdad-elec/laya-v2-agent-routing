@@ -1,0 +1,11 @@
+{
+  "tier": {
+    "type": "choice",
+    "instructions": "Which model tier should answer the user's `request`? Pick the cheapest tier that can do it well.",
+    "criteria": {
+      "powerful": "like: design this system, is this contract enforceable, prove this, plan this migration",
+      "medium": "like: write this function, summarise this document, explain this error, draft this email",
+      "small": "like: convert these units, fix this typo, what is the capital of Peru, reformat this list"
+    }
+  }
+}
