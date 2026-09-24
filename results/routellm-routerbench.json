@@ -1,0 +1,189 @@
+{
+ "arc": {
+  "n": 441,
+  "weak": [
+   5.347210884353741e-05,
+   0.8707482993197279
+  ],
+  "strong": [
+   0.0009112698412698413,
+   0.9705215419501134
+  ],
+  "line_aiq": 0.9206349206349206,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.9351148647418361,
+    "quality_at_half_strong": 0.9410430839002267
+   },
+   "laya-root": {
+    "aiq": 0.925639585968754,
+    "quality_at_half_strong": 0.9206349206349206
+   },
+   "laya-v2-policy": {
+    "aiq": 0.9271647113980046,
+    "quality_at_half_strong": 0.9319727891156463
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   -0.0007407800787458951,
+   0.015678619417120232
+  ]
+ },
+ "gsm8k": {
+  "n": 500,
+  "weak": [
+   0.00026542680000000003,
+   0.5145
+  ],
+  "strong": [
+   0.0085298,
+   0.6565
+  ],
+  "line_aiq": 0.5854999999999999,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.5920729351138208,
+    "quality_at_half_strong": 0.589
+   },
+   "laya-root": {
+    "aiq": 0.5867224061348051,
+    "quality_at_half_strong": 0.5815
+   },
+   "laya-v2-policy": {
+    "aiq": 0.589766267380084,
+    "quality_at_half_strong": 0.579
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   -0.0017690595934868325,
+   0.008224479214929747
+  ]
+ },
+ "hellaswag": {
+  "n": 500,
+  "weak": [
+   0.0001265724,
+   0.424
+  ],
+  "strong": [
+   0.00213274,
+   0.854
+  ],
+  "line_aiq": 0.639,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.6478194412072051,
+    "quality_at_half_strong": 0.606
+   },
+   "laya-root": {
+    "aiq": 0.6403226213004337,
+    "quality_at_half_strong": 0.644
+   },
+   "laya-v2-policy": {
+    "aiq": 0.6456845069175675,
+    "quality_at_half_strong": 0.668
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   -0.014433867835107472,
+   0.01802293757953166
+  ]
+ },
+ "mbpp": {
+  "n": 129,
+  "weak": [
+   0.00017142790697674418,
+   0.5968992248062015
+  ],
+  "strong": [
+   0.009433100775193798,
+   0.6744186046511628
+  ],
+  "line_aiq": 0.6356589147286822,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.6522497060736971,
+    "quality_at_half_strong": 0.627906976744186
+   },
+   "laya-root": {
+    "aiq": 0.6551742919107969,
+    "quality_at_half_strong": 0.6511627906976745
+   },
+   "laya-v2-policy": {
+    "aiq": 0.6628470583209225,
+    "quality_at_half_strong": 0.6434108527131783
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   -0.030023961860752735,
+   0.012098468107079374
+  ]
+ },
+ "mmlu": {
+  "n": 500,
+  "weak": [
+   8.48592e-05,
+   0.628
+  ],
+  "strong": [
+   0.00143168,
+   0.81
+  ],
+  "line_aiq": 0.7190000000000001,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.7456281111785621,
+    "quality_at_half_strong": 0.712
+   },
+   "laya-root": {
+    "aiq": 0.7216732067102023,
+    "quality_at_half_strong": 0.71
+   },
+   "laya-v2-policy": {
+    "aiq": 0.7190953498787664,
+    "quality_at_half_strong": 0.708
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   0.01528558190821927,
+   0.03775125238666721
+  ]
+ },
+ "winogrande": {
+  "n": 381,
+  "weak": [
+   3.0839370078740155e-05,
+   0.5328083989501312
+  ],
+  "strong": [
+   0.0005418110236220473,
+   0.8162729658792651
+  ],
+  "line_aiq": 0.6745406824146982,
+  "routers": {
+   "routellm-bert": {
+    "aiq": 0.6828269699543945,
+    "quality_at_half_strong": 0.6509186351706037
+   },
+   "laya-root": {
+    "aiq": 0.6836714088755469,
+    "quality_at_half_strong": 0.6719160104986877
+   },
+   "laya-v2-policy": {
+    "aiq": 0.6776240364435242,
+    "quality_at_half_strong": 0.6404199475065617
+   }
+  },
+  "routellm_minus_laya_v2_ci90": [
+   -0.010383829273052925,
+   0.02018948568938428
+  ]
+ },
+ "_mean_over_tasks": {
+  "routellm_minus_laya_v2": 0.0055883496551077565,
+  "ci90": [
+   0.0001254333586569826,
+   0.01156935270063895
+  ]
+ }
+}

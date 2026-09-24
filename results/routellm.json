@@ -1,0 +1,106 @@
+{
+ "checkpoint": "routellm/bert_gpt4_augmented",
+ "weights_sha256": "e2a92240bad1c7fb9befbf021a62fad5feb1e2a3990d53a28d160a39bb1cac7b",
+ "t_lo": 0.65,
+ "t_hi": 0.69,
+ "tune_accuracy": 0.4429530201342282,
+ "n_tune": 149,
+ "n_held": 151,
+ "share": {
+  "small": 0.8874172185430463,
+  "medium": 0.013245033112582781,
+  "powerful": 0.09933774834437085
+ },
+ "by_corpus": {
+  "all": {
+   "routellm": [
+    0.4304635761589404,
+    151
+   ],
+   "laya_v2": [
+    0.8013245033112583,
+    151
+   ],
+   "judge": [
+    0.6622516556291391,
+    151
+   ],
+   "laya_v2_vs_routellm": {
+    "a_only": 70,
+    "b_only": 14,
+    "n_discordant": 84,
+    "p_two_sided": 0.0,
+    "p_b_better": 1.0
+   },
+   "routellm_vs_judge": {
+    "a_only": 22,
+    "b_only": 57,
+    "n_discordant": 79,
+    "p_two_sided": 0.000103,
+    "p_b_better": 5.1e-05
+   },
+   "routellm_under": 77,
+   "routellm_over": 9
+  },
+  "borrowed": {
+   "routellm": [
+    0.3516483516483517,
+    91
+   ],
+   "laya_v2": [
+    0.8571428571428571,
+    91
+   ],
+   "judge": [
+    0.6373626373626373,
+    91
+   ],
+   "laya_v2_vs_routellm": {
+    "a_only": 48,
+    "b_only": 2,
+    "n_discordant": 50,
+    "p_two_sided": 0.0,
+    "p_b_better": 1.0
+   },
+   "routellm_vs_judge": {
+    "a_only": 14,
+    "b_only": 40,
+    "n_discordant": 54,
+    "p_two_sided": 0.000535,
+    "p_b_better": 0.000268
+   },
+   "routellm_under": 59,
+   "routellm_over": 0
+  },
+  "pilot": {
+   "routellm": [
+    0.55,
+    60
+   ],
+   "laya_v2": [
+    0.7166666666666667,
+    60
+   ],
+   "judge": [
+    0.7,
+    60
+   ],
+   "laya_v2_vs_routellm": {
+    "a_only": 22,
+    "b_only": 12,
+    "n_discordant": 34,
+    "p_two_sided": 0.121449,
+    "p_b_better": 0.971194
+   },
+   "routellm_vs_judge": {
+    "a_only": 8,
+    "b_only": 17,
+    "n_discordant": 25,
+    "p_two_sided": 0.107752,
+    "p_b_better": 0.053876
+   },
+   "routellm_under": 18,
+   "routellm_over": 9
+  }
+ }
+}

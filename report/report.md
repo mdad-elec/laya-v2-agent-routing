@@ -111,6 +111,24 @@ the remaining distance to the oracle is the menu's, not the decider's.
 
 ![Figure 2. Answer quality against median cost per turn on the cell menu, 60 held asks. Up and to the left is better.](figures/f2-cost-quality.svg)
 
+## 6b. Against RouteLLM (H7, amendment 3)
+
+RouteLLM's released BERT router (`routellm/bert_gpt4_augmented`) was scored with RouteLLM's own strong-win-rate
+formula. Two thresholds fitted on tune map that score onto the three bands. Its other three routers were not run:
+two need OpenAI embeddings, and the causal-LLM router needs an 8B model on a GPU we did not have free
+(`results/laya-v2/routellm.md`).
+
+| | RouteLLM BERT | Laya-v2 | |
+|---|---|---|---|
+| held band accuracy, 151 rows | 0.430 | **0.801** | 70 vs 14 discordant, p = 2e-10 |
+| quality, cell menu, 60 asks | 0.842 | **0.944** | CI [+0.053, +0.157] |
+| quality, models-only ladder | 0.842 | 0.838 | a tie; Laya-v2 41 vs 106 µUSD per median turn |
+| RouterBench AIQ, GPT-4 vs Mixtral, mean of 6 tasks | **+0.006** over Laya-v2 | | CI [+0.0001, +0.012]; only MMLU apart |
+
+Each router wins the question it was trained on. RouteLLM's score predicts whether GPT-4 beats Mixtral, and it
+barely separates this estate's tiers, so the tune-fitted thresholds send 89% of requests to `small`. Laya-v2
+learned the spending policy, and on RouteLLM's own benchmark pair it is a hair behind.
+
 ## 7. What went the other way
 
 - **Effort barely matters for correctness here.** For a given model, the lowest measured effort is within 0.05 of that

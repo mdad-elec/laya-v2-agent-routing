@@ -30,6 +30,12 @@ dataset, a runnable benchmark package, and the fine-tuned checkpoint with the co
   112 of 120 asks, so the effort question was dropped.
 - **It does not transfer to RouterBench.** Neither the zero-shot nor the fine-tuned Laya reaches the single-model
   hull on any of six tasks. Laya-v2 learned a spending policy, and RouterBench labels which model solved the prompt.
+- **Against RouteLLM's released BERT router (pre-registered, amendment 3),** Laya-v2 wins the decision this repo
+  is about. Band accuracy is 0.801 against 0.430 (p = 2e-10). Answer quality on the cell menu is 0.944 against
+  0.842, CI [+0.053, +0.157], and the models-only ladder is a tie at 2.6× lower cost. On RouteLLM's own
+  RouterBench pair, GPT-4 against Mixtral, RouteLLM is ahead by 0.006 AIQ on average, and only MMLU is clearly
+  apart. Each router wins the question it was trained on. RouteLLM's other three routers were not run: two need
+  OpenAI embeddings and one needs an 8B model on a GPU (`results/routellm.md`).
 - **In one long conversation, a session-hold rule undid Laya's choice.** The recording caught Laya naming `powerful`
   while the gateway kept a cheap cell it had reached earlier.
 

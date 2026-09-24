@@ -117,3 +117,28 @@ From here every rung measures, tunes, calibrates and trains on that serving form
 (`convaiinnovations/laya`, sha256 of model.safetensors `891102d372688fc2…` as served) shown the **bare
 request** `{"request": …}`. The router sends that state (Task 10). Held-out band accuracy at adoption:
 0.629 against the judge's 0.662 — the bar the remaining rungs must clear.
+
+### Amendment 3 — 2026-09-24, before any RouteLLM router was run
+
+**H7: Laya-v2 against RouteLLM** (Ong et al., arXiv 2406.18665), the router the programme set out to beat.
+Of RouteLLM's four released routers, only the BERT classifier (`routellm/bert_gpt4_augmented`) can run
+here: the matrix-factorisation and similarity-weighted routers embed every prompt with OpenAI's
+embedding API (no key on this box), and the causal-LLM router is an 8B model with no GPU free for it.
+Those three are **not measured**, and nothing below speaks for them.
+
+- **Score.** RouteLLM's own `calculate_strong_win_rate`, verbatim: softmax over the three logits,
+  score = 1 − P(tie) − P(weak wins).
+- **Bands.** RouteLLM routes two ways. Our decision has three bands, so the score maps through two
+  thresholds `t_lo ≤ t_hi` (below `t_lo` small, below `t_hi` medium, else powerful), fitted on the tune
+  split by grid (step 0.01) for band accuracy, ties to the lowest `t_lo` then the lowest `t_hi`. This is
+  the same treatment the judge received (a one-parameter adapter fitted on tune), with one more
+  parameter in RouteLLM's favour.
+- **Read once on held**, the same 151 H1 rows and 60 H2 asks, DSS rows apart.
+- **Claim.** "Laya-v2 beats RouteLLM's BERT router" is made only if band accuracy Laya-v2 − RouteLLM ≥ 0.05
+  **and** one-sided exact McNemar p < 0.05 (H1's bar). On quality, both menus are reported with the paired
+  90% bootstrap CI; "better quality" is claimed only where the CI excludes 0. A tie is reported as a tie.
+- **RouterBench, RouteLLM's native setting.** The strong/weak pair the RouteLLM paper uses is GPT-4 against
+  Mixtral-8x7B, which are exactly our RouterBench `powerful` and `small` menu models. RouteLLM's router is
+  swept over its threshold on that pair; Laya-v2 is swept the same way over P(powerful). Both are scored
+  by AIQ against the same-sample hull of the two models, on the same 2,451 test prompts. No refit on
+  RouterBench for either router.
