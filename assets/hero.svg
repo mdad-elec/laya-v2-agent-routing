@@ -1,0 +1,33 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 300' width='760' height='300' font-family='system-ui,-apple-system,Segoe UI,sans-serif'>
+<title>Held-out routing accuracy</title><desc>Computed from results/VERDICT.md, results/routellm.md, results/vllmsr.md. 151 held-out requests; laya_router setup on its own 91 held rows.</desc>
+<rect width='760' height='300' fill='#ffffff' rx='10'/>
+<text x='24' y='32' font-size='17' font-weight='700' fill='#1f2328'>Which price tier should this agent turn get? Held-out accuracy</text>
+<line x1='300' y1='50' x2='300' y2='246' stroke='#d0d7de'/>
+<text x='300' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>0.0</text>
+<line x1='380' y1='50' x2='380' y2='246' stroke='#d0d7de'/>
+<text x='380' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>0.2</text>
+<line x1='460' y1='50' x2='460' y2='246' stroke='#d0d7de'/>
+<text x='460' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>0.4</text>
+<line x1='540' y1='50' x2='540' y2='246' stroke='#d0d7de'/>
+<text x='540' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>0.6</text>
+<line x1='620' y1='50' x2='620' y2='246' stroke='#d0d7de'/>
+<text x='620' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>0.8</text>
+<line x1='700' y1='50' x2='700' y2='246' stroke='#d0d7de'/>
+<text x='700' y='262' font-size='11' fill='#6e7781' text-anchor='middle'>1.0</text>
+<text x='290' y='79' font-size='13' fill='#1f2328' text-anchor='end' font-weight='400'>RouteLLM · BERT router</text>
+<rect x='300' y='63' width='172' height='24' rx='3' fill='#8c959f'/>
+<text x='480' y='79' font-size='13' font-weight='700' fill='#57606a'>0.430</text>
+<text x='290' y='117' font-size='13' fill='#1f2328' text-anchor='end' font-weight='400'>vLLM Semantic Router · RouterArena #6</text>
+<rect x='300' y='101' width='212' height='24' rx='3' fill='#8c959f'/>
+<text x='520' y='117' font-size='13' font-weight='700' fill='#57606a'>0.530</text>
+<text x='290' y='155' font-size='13' fill='#1f2328' text-anchor='end' font-weight='400'>laya_router setup · Laya zero-shot</text>
+<rect x='300' y='139' width='237' height='24' rx='3' fill='#8c959f'/>
+<text x='545' y='155' font-size='13' font-weight='700' fill='#57606a'>0.593</text>
+<text x='290' y='193' font-size='13' fill='#1f2328' text-anchor='end' font-weight='400'>27B LLM judge · today's router</text>
+<rect x='300' y='177' width='265' height='24' rx='3' fill='#8250df'/>
+<text x='573' y='193' font-size='13' font-weight='700' fill='#8250df'>0.662</text>
+<text x='290' y='231' font-size='13' fill='#1f2328' text-anchor='end' font-weight='700'>Laya-v2 · this repo</text>
+<rect x='300' y='215' width='320' height='24' rx='3' fill='#0b6bcb'/>
+<text x='628' y='231' font-size='13' font-weight='700' fill='#0b6bcb'>0.801</text>
+<text x='24' y='286' font-size='11' fill='#6e7781'>151 held-out requests, pre-registered, read once. laya_router's setup is scored on its own corpus's 91 held rows.</text>
+</svg>
