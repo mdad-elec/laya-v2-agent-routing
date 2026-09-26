@@ -29,7 +29,7 @@ def to_item(row: dict) -> Item:
               f"then finish with \"the answer is (X)\" where X is the letter of the correct option.\n\n"
               f"Question: {row['question']}\n\nOptions:\n{options}")
     return Item(suite="mmlu_pro", native_id=str(row["question_id"]), messages=[{"role": "user", "content": prompt}],
-                gold=row["answer"], meta={"category": row["category"]})
+                gold=row["answer"], meta={"category": row["category"], "source_text": row["question"]})
 
 
 class MMLUPro(Suite):

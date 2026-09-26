@@ -109,7 +109,8 @@ class BFCL(Suite):
                 functions += [f for f in docs[file] if f["name"] not in (e.get("excluded_function") or [])]
             items.append(Item(suite=self.name, native_id=e["id"], messages=[],
                               gold={"entry": e, "ground_truth": answers[e["id"]], "functions": functions},
-                              meta={"classes": "+".join(sorted(e["involved_classes"])), "turns": len(e["question"])}))
+                              meta={"classes": "+".join(sorted(e["involved_classes"])), "turns": len(e["question"]),
+                                    "source_text": e["question"][0][0]["content"] if e["question"] and e["question"][0] else ""}))
         return items
 
     def check(self, item: Item, answer: str) -> float:

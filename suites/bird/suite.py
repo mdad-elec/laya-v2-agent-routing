@@ -59,7 +59,7 @@ def to_item(row: dict, schema: str) -> Item:
               f"Evidence: {row.get('evidence') or '(none)'}\n\nQuestion: {row['question']}\n\n"
               f"Give the final query in a ```sql code block.")
     return Item(suite="bird_mini_dev", native_id=str(row["question_id"]), messages=[{"role": "user", "content": prompt}],
-                gold={"db_id": row["db_id"], "sql": row["SQL"]}, meta={"difficulty": row["difficulty"], "db_id": row["db_id"]})
+                gold={"db_id": row["db_id"], "sql": row["SQL"]}, meta={"difficulty": row["difficulty"], "db_id": row["db_id"], "source_text": row["question"]})
 
 
 class BIRDMiniDev(Suite):

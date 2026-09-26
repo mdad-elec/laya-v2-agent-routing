@@ -101,7 +101,7 @@ class ArenaHard(Suite):
                 continue
             items.append(Item(suite=self.name, native_id=q["uid"], messages=[{"role": "user", "content": q["prompt"]}],
                               gold={"baseline": baseline, "category": kind, "prompt": q["prompt"]},
-                              meta={"category": q.get("subcategory") or q["category"]}))
+                              meta={"category": q.get("subcategory") or q["category"], "source_text": q["prompt"]}))
         return items
 
     def check(self, item: Item, answer: str) -> float:

@@ -53,7 +53,7 @@ def items_from(contexts: list[dict]) -> list[Item]:
                       f"Text:\n{paragraphs}\n\nQuestion: {q['question']}\n\n"
                       f"Work it out, then give the result as a bare number (no units; a percentage as e.g. 12.5) on a final line \"Answer: <number>\".")
             items.append(Item(suite="tatqa", native_id=q["uid"], messages=[{"role": "user", "content": prompt}],
-                              gold={"value": float(q["answer"]), "scale": q.get("scale") or ""}, meta={"scale": q.get("scale") or ""}))
+                              gold={"value": float(q["answer"]), "scale": q.get("scale") or ""}, meta={"scale": q.get("scale") or "", "source_text": q["question"]}))
     return items
 
 

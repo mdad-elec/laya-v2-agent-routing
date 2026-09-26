@@ -17,7 +17,7 @@ REVISION = "e6890f85757dd84e27ca6df2dd30651dafad28e0"
 def to_item(row: dict) -> Item:
     return Item(suite="ifeval", native_id=str(row["key"]), messages=[{"role": "user", "content": row["prompt"]}],
                 gold={"ids": row["instruction_id_list"], "kwargs": row["kwargs"], "prompt": row["prompt"]},
-                meta={"family": row["instruction_id_list"][0].split(":")[0]})
+                meta={"family": row["instruction_id_list"][0].split(":")[0], "source_text": row["prompt"]})
 
 
 class IFEval(Suite):

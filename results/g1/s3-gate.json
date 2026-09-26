@@ -1,0 +1,383 @@
+{
+ "prereg_sha": "627ad2633fc1d063e9544c136bfc803e2cce1cdb",
+ "gate": "S3",
+ "verdict": "FAIL",
+ "datasets_passing": 8,
+ "pooled": {
+  "knn": 0.6049,
+  "majority": 0.5852,
+  "gain": 0.0197,
+  "items": 9962
+ },
+ "held_suite_prompts_excluded": 7325,
+ "per_dataset": {
+  "aime": {
+   "items": 28,
+   "bands": {
+    "small": 1,
+    "medium": 13,
+    "powerful": 14
+   },
+   "unsolved": 3,
+   "models": 38,
+   "top_band_share": 0.5,
+   "knn": 0.3929,
+   "majority": 0.3929,
+   "gain": 0.0
+  },
+  "arc-agi": {
+   "items": 212,
+   "bands": {
+    "small": 12,
+    "medium": 17,
+    "powerful": 183
+   },
+   "unsolved": 131,
+   "models": 17,
+   "top_band_share": 0.863,
+   "left_out": "86% of labels in one band"
+  },
+  "arcc": {
+   "items": 581,
+   "bands": {
+    "small": 487,
+    "medium": 44,
+    "powerful": 50
+   },
+   "unsolved": 29,
+   "models": 20,
+   "top_band_share": 0.838,
+   "knn": 0.8382,
+   "majority": 0.8382,
+   "gain": 0.0
+  },
+  "arenahard": {
+   "items": 174,
+   "bands": {
+    "small": 5,
+    "medium": 30,
+    "powerful": 139
+   },
+   "unsolved": 27,
+   "models": 35,
+   "top_band_share": 0.799,
+   "knn": 0.7989,
+   "majority": 0.7989,
+   "gain": 0.0
+  },
+  "arenahard_coding": {
+   "items": 64,
+   "bands": {
+    "small": 1,
+    "medium": 5,
+    "powerful": 58
+   },
+   "unsolved": 10,
+   "models": 33,
+   "top_band_share": 0.906,
+   "left_out": "91% of labels in one band"
+  },
+  "arenahard_creative_writing": {
+   "items": 60,
+   "bands": {
+    "small": 2,
+    "medium": 13,
+    "powerful": 45
+   },
+   "unsolved": 1,
+   "models": 33,
+   "top_band_share": 0.75,
+   "knn": 0.75,
+   "majority": 0.75,
+   "gain": 0.0
+  },
+  "arenahard_math": {
+   "items": 50,
+   "bands": {
+    "small": 2,
+    "medium": 2,
+    "powerful": 46
+   },
+   "unsolved": 20,
+   "models": 33,
+   "top_band_share": 0.92,
+   "left_out": "92% of labels in one band"
+  },
+  "bbh": {
+   "items": 560,
+   "bands": {
+    "small": 180,
+    "medium": 210,
+    "powerful": 170
+   },
+   "unsolved": 46,
+   "models": 20,
+   "top_band_share": 0.375,
+   "knn": 0.5179,
+   "majority": 0.375,
+   "gain": 0.1429
+  },
+  "bfcl_multi_turn_base": {
+   "items": 51,
+   "bands": {
+    "small": 0,
+    "medium": 4,
+    "powerful": 47
+   },
+   "unsolved": 10,
+   "models": 109,
+   "top_band_share": 0.922,
+   "left_out": "92% of labels in one band"
+  },
+  "emorynlp": {
+   "items": 320,
+   "bands": {
+    "small": 82,
+    "medium": 45,
+    "powerful": 193
+   },
+   "unsolved": 173,
+   "models": 20,
+   "top_band_share": 0.603,
+   "knn": 0.5938,
+   "majority": 0.6031,
+   "gain": -0.0094
+  },
+  "finqa": {
+   "items": 603,
+   "bands": {
+    "small": 312,
+    "medium": 119,
+    "powerful": 172
+   },
+   "unsolved": 128,
+   "models": 20,
+   "top_band_share": 0.517,
+   "knn": 0.5373,
+   "majority": 0.5174,
+   "gain": 0.0199
+  },
+  "hle": {
+   "items": 1075,
+   "bands": {
+    "small": 11,
+    "medium": 57,
+    "powerful": 1007
+   },
+   "unsolved": 885,
+   "models": 17,
+   "top_band_share": 0.937,
+   "left_out": "94% of labels in one band"
+  },
+  "humaneval": {
+   "items": 75,
+   "bands": {
+    "small": 26,
+    "medium": 24,
+    "powerful": 25
+   },
+   "unsolved": 11,
+   "models": 22,
+   "top_band_share": 0.347,
+   "knn": 0.36,
+   "majority": 0.2667,
+   "gain": 0.0933
+  },
+  "kandk": {
+   "items": 380,
+   "bands": {
+    "small": 29,
+    "medium": 46,
+    "powerful": 305
+   },
+   "unsolved": 39,
+   "models": 20,
+   "top_band_share": 0.803,
+   "knn": 0.8026,
+   "majority": 0.8026,
+   "gain": 0.0
+  },
+  "korbench": {
+   "items": 627,
+   "bands": {
+    "small": 120,
+    "medium": 100,
+    "powerful": 407
+   },
+   "unsolved": 253,
+   "models": 20,
+   "top_band_share": 0.649,
+   "knn": 0.7018,
+   "majority": 0.6491,
+   "gain": 0.0526
+  },
+  "livecodebench": {
+   "items": 534,
+   "bands": {
+    "small": 82,
+    "medium": 234,
+    "powerful": 218
+   },
+   "unsolved": 121,
+   "models": 38,
+   "top_band_share": 0.438,
+   "knn": 0.5918,
+   "majority": 0.3951,
+   "gain": 0.1966
+  },
+  "livemathbench": {
+   "items": 60,
+   "bands": {
+    "small": 19,
+    "medium": 21,
+    "powerful": 20
+   },
+   "unsolved": 11,
+   "models": 35,
+   "top_band_share": 0.35,
+   "knn": 0.4,
+   "majority": 0.2333,
+   "gain": 0.1667
+  },
+  "math500": {
+   "items": 242,
+   "bands": {
+    "small": 111,
+    "medium": 91,
+    "powerful": 40
+   },
+   "unsolved": 10,
+   "models": 20,
+   "top_band_share": 0.459,
+   "knn": 0.5165,
+   "majority": 0.4587,
+   "gain": 0.0579
+  },
+  "mathbench": {
+   "items": 49,
+   "bands": {
+    "small": 18,
+    "medium": 12,
+    "powerful": 19
+   },
+   "unsolved": 0,
+   "models": 20,
+   "top_band_share": 0.388,
+   "knn": 0.3061,
+   "majority": 0.3061,
+   "gain": 0.0
+  },
+  "mbpp": {
+   "items": 463,
+   "bands": {
+    "small": 168,
+    "medium": 130,
+    "powerful": 165
+   },
+   "unsolved": 103,
+   "models": 20,
+   "top_band_share": 0.363,
+   "knn": 0.4017,
+   "majority": 0.3261,
+   "gain": 0.0756
+  },
+  "medqa": {
+   "items": 639,
+   "bands": {
+    "small": 286,
+    "medium": 164,
+    "powerful": 189
+   },
+   "unsolved": 106,
+   "models": 20,
+   "top_band_share": 0.448,
+   "knn": 0.3678,
+   "majority": 0.4476,
+   "gain": -0.0798
+  },
+  "meld": {
+   "items": 657,
+   "bands": {
+    "small": 261,
+    "medium": 94,
+    "powerful": 302
+   },
+   "unsolved": 239,
+   "models": 20,
+   "top_band_share": 0.46,
+   "knn": 0.3973,
+   "majority": 0.4597,
+   "gain": -0.0624
+  },
+  "mmlupro": {
+   "items": 731,
+   "bands": {
+    "small": 108,
+    "medium": 500,
+    "powerful": 123
+   },
+   "unsolved": 80,
+   "models": 38,
+   "top_band_share": 0.684,
+   "knn": 0.6895,
+   "majority": 0.684,
+   "gain": 0.0055
+  },
+  "simpleqa": {
+   "items": 2193,
+   "bands": {
+    "small": 453,
+    "medium": 252,
+    "powerful": 1488
+   },
+   "unsolved": 985,
+   "models": 16,
+   "top_band_share": 0.679,
+   "knn": 0.6671,
+   "majority": 0.6785,
+   "gain": -0.0114
+  },
+  "swe-bench": {
+   "items": 247,
+   "bands": {
+    "small": 9,
+    "medium": 40,
+    "powerful": 198
+   },
+   "unsolved": 162,
+   "models": 15,
+   "top_band_share": 0.802,
+   "knn": 0.8016,
+   "majority": 0.8016,
+   "gain": 0.0
+  },
+  "tau2": {
+   "items": 125,
+   "bands": {
+    "small": 47,
+    "medium": 37,
+    "powerful": 41
+   },
+   "unsolved": 28,
+   "models": 12,
+   "top_band_share": 0.376,
+   "knn": 0.536,
+   "majority": 0.288,
+   "gain": 0.248
+  },
+  "winogrande": {
+   "items": 614,
+   "bands": {
+    "small": 389,
+    "medium": 118,
+    "powerful": 107
+   },
+   "unsolved": 47,
+   "models": 20,
+   "top_band_share": 0.634,
+   "knn": 0.6091,
+   "majority": 0.6336,
+   "gain": -0.0244
+  }
+ }
+}
