@@ -1,3 +1,27 @@
+# Laya-g1 sources (2026-09-26)
+
+Every source is fetched at a pinned revision at run time; no item text is committed, only ids
+(hashes of suite + native id) and derived scores.
+
+| Source | Use | Licence | Pinned |
+|---|---|---|---|
+| [LMArena leaderboard dataset](https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset) | Atlas priors (text, agent arenas) | CC BY 4.0 | `a4e245e5` (published 2026-09-25) |
+| [Epoch AI Benchmarking Hub](https://epoch.ai/benchmarks/use-this-data) | Atlas priors (17 benchmarks, per effort) | CC BY 4.0 (external data keeps its own terms) | zip sha256 `365070cf…` (2026-09-26) |
+| [MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) (TIGER-Lab) | suite `knowledge` | MIT | `b189ec76` |
+| [TAT-QA](https://github.com/NExTplusplus/TAT-QA) (NExT++) | suite `fin_table` | CC BY 4.0 | `870accc4` |
+| [IFEval](https://github.com/google-research/google-research/tree/master/instruction_following_eval) (Google Research) | suite `instruct`; checker vendored unmodified | Apache-2.0 | `e6890f85` |
+| [BIRD Mini-Dev](https://huggingface.co/datasets/birdsql/bird_mini_dev) + BIRD dev databases | suite `sql` | CC BY-SA 4.0 (derived scores only) | `f65faf4a`; dev.zip sha256 `cdd6d19f…` |
+| [RULER](https://github.com/NVIDIA/RULER) (NVIDIA) | suite `long_ctx`: templates and metric; contexts generated | Apache-2.0 | generator `ruler-subset-1` |
+| [BFCL v4](https://github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard) (Berkeley) | suite `tools_multiturn`; APIs and checker vendored | Apache-2.0 | `6ea57973` |
+| [Aider polyglot benchmark](https://github.com/Aider-AI/polyglot-benchmark) (Exercism exercises) | suite `code` | MIT (Exercism tracks; the benchmark repo carries no licence file of its own: on the licence sign-off) | `7e0611e7` |
+| [Arena-Hard-Auto v2.0](https://github.com/lmarena/arena-hard-auto) (LMArena) | suite `chat`: prompts, baselines, judge prompts | Apache-2.0 | `196f6b82` |
+
+Not used, on purpose: GPQA (its authors ask that items not be published), IFBench (data licensed for
+research/education), LiveCodeBench (contest-site terms), and Artificial Analysis (no redistribution;
+it may be used only as a private overlay).
+
+---
+
 # Where this corpus comes from
 
 ## `requests.jsonl` — 180 requests, not ours
