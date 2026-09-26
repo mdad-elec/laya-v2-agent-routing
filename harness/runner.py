@@ -63,7 +63,7 @@ def run_campaign(suites: list[Suite], cells: list[str], backend, out: Path, harn
         for suite, item, cell, rep in jobs:
             usage: dict = {}
 
-            def ask(messages, _cell=cell):
+            def ask(messages, _cell=cell, usage=usage):
                 text, u = backend.ask(_cell, messages)
                 for k, v in u.items():  # an episode asks many times: usage adds up
                     usage[k] = usage.get(k, 0) + (v or 0)

@@ -51,8 +51,8 @@ class Golden(unittest.TestCase):
         with ThreadPoolExecutor(4) as pool:
             refs = list(pool.map(s.check_reference, items))
             stubs = list(pool.map(lambda i: s.check(i, ""), items))
-        self.assertEqual([i.native_id for i, r in zip(items, refs) if r != 1.0], [])
-        self.assertEqual([i.native_id for i, r in zip(items, stubs) if r != 0.0], [])
+        self.assertEqual([i.native_id for i, r in zip(items, refs, strict=True) if r != 1.0], [])
+        self.assertEqual([i.native_id for i, r in zip(items, stubs, strict=True) if r != 0.0], [])
 
 
 if __name__ == "__main__":

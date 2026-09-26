@@ -7,7 +7,6 @@ instruction in the prompt is followed by the response as written.
 """
 from __future__ import annotations
 
-import json
 import urllib.request
 
 from suites.base import Item, Suite, read_jsonl
@@ -41,9 +40,9 @@ class IFEval(Suite):
             nltk.data.path.insert(0, target)
         try:
             nltk.data.find("tokenizers/punkt_tab/english/")
-        except LookupError:
+        except LookupError as missing:
             if not nltk.download("punkt_tab", download_dir=target, quiet=True):
-                raise RuntimeError("could not provision NLTK punkt_tab for the IFEval checker")
+                raise RuntimeError("could not provision NLTK punkt_tab for the IFEval checker") from missing
 
     def load(self) -> list[Item]:
         self._nltk_ready()

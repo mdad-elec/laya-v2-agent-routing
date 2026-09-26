@@ -1,6 +1,6 @@
 import unittest
 
-from suites.base import Item, select
+from suites.base import select
 from suites.mmlu_pro.suite import MMLUPro, extract_letter, to_item
 
 
@@ -11,7 +11,8 @@ class MMLUProSuite(unittest.TestCase):
     def test_a_row_becomes_a_lettered_multiple_choice_prompt(self):
         item = to_item(self.row)
         text = item.messages[0]["content"]
-        self.assertIn("A. a", text); self.assertIn("D. d", text)
+        self.assertIn("A. a", text)
+        self.assertIn("D. d", text)
         self.assertIn("the answer is (X)", text)
         self.assertEqual((item.gold, item.meta["category"], item.native_id), ("C", "business", "70"))
 

@@ -15,7 +15,6 @@ score >= 0.5: at least as good as the benchmark's baseline.
 from __future__ import annotations
 
 import ast
-import json
 import re
 import urllib.request
 

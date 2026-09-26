@@ -100,22 +100,27 @@ class AiderPolyglot(Suite):
         return items
 
     def check_reference(self, item: Item) -> float:
-        """The golden path: the exercise's own reference solution, WITH its Cargo-example.toml when
-        it has one (a reference may use crates the stub's manifest does not list). A model's answer
-        never gets this: check() writes only the declared solution files."""
-        extra = {}
-        manifest = Path(item.gold["dir"]) / ".meta" / "Cargo-example.toml"
-        if item.meta["language"] == "rust" and manifest.exists():
-            extra["Cargo.toml"] = manifest.read_text()
-        return self._run(item, {**parse_files(self.reference_answer(item)), **extra}, set(item.gold["solution_files"]) | set(extra))
+        """The golden path: the exercise's own reference solution, scored exactly as a model's
+        answer is (check() writes only declared solution files). A Rust exercise declares its
+        Cargo.toml as a SOLUTION file -- a model may add crates, as in Aider -- so its reference
+        brings .meta/Cargo-example.toml as that file when it has one."""
+        return self.check(item, self.reference_answer(item))
 
     def reference_answer(self, item: Item) -> str:
-        """The exercise's own reference solution, in the answer format -- the golden check's input."""
+        """The exercise's own reference solution, in the answer format. Examples pair with solution
+        files by position; a solution file with no example of its own (Rust's Cargo.toml) takes
+        .meta/Cargo-example.toml when present and otherwise keeps its stub -- stated, not a silent
+        truncation (measured: 29 Rust exercises declare 2 solution files and 1 example)."""
         ex = Path(item.gold["dir"])
         examples = [ex / e for e in item.gold["example_files"]]
-        blocks = []
-        for sol, example in zip(item.gold["solution_files"], examples):
-            blocks.append(f"FILE: {sol}\n```\n{example.read_text()}```")
+        solutions = item.gold["solution_files"]
+        if len(examples) > len(solutions):
+            raise ValueError(f"{item.native_id}: {len(examples)} examples for {len(solutions)} solution files")
+        blocks = [f"FILE: {sol}\n```\n{example.read_text()}```" for sol, example in zip(solutions[: len(examples)], examples, strict=True)]
+        for sol in solutions[len(examples):]:
+            manifest = ex / ".meta" / "Cargo-example.toml"
+            if sol == "Cargo.toml" and manifest.exists():
+                blocks.append(f"FILE: {sol}\n```\n{manifest.read_text()}```")
         return "\n\n".join(blocks)
 
     def check(self, item: Item, answer: str) -> float:

@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: lint
+        run: ruff check .
+      - name: atlas
+        run: python -m unittest discover -s atlas/tests -t .
+      - name: suites (the Docker sandbox tests skip without the laya-g1-polyglot image; goldens fetch their pinned data)
+        run: python -m unittest discover -s suites/tests -t .
+      - name: harness
+        run: python -m unittest discover -s harness/tests -t .
+      - name: the frozen v2 study still reproduces
+        working-directory: studies/v2
+        run: |
+          python benchmark/audit.py
+          python -m unittest discover -s benchmark/tests

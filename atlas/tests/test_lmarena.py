@@ -4,7 +4,8 @@ import json
 import unittest
 from pathlib import Path
 
-from atlas.importers.lmarena import CATEGORY_DOMAIN_FLAT as CATEGORY_DOMAIN, match, profiles_from
+from atlas.importers.lmarena import CATEGORY_DOMAIN_FLAT as CATEGORY_DOMAIN
+from atlas.importers.lmarena import match, profiles_from
 from atlas.schema import validate_profile
 
 CATALOGUE = json.loads((Path(__file__).resolve().parents[1] / "catalogue.json").read_text())

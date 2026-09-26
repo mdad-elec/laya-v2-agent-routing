@@ -19,11 +19,20 @@ class Fake(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(int(self.headers["content-length"])))
         Fake.seen.append((dict(self.headers), body))
         if Fake.mode == "limit":
-            self.send_response(429); self.end_headers(); self.wfile.write(b'{"error":"usage limit reached"}'); return
+            self.send_response(429)
+            self.end_headers()
+            self.wfile.write(b'{"error":"usage limit reached"}')
+            return
         if Fake.mode == "broken":
-            self.send_response(502); self.end_headers(); self.wfile.write(b'{"error":"seat crashed"}'); return
+            self.send_response(502)
+            self.end_headers()
+            self.wfile.write(b'{"error":"seat crashed"}')
+            return
         out = {"choices": [{"message": {"content": "hi from " + body["model"]}}], "usage": {"prompt_tokens": 7, "completion_tokens": 3}}
-        self.send_response(200); self.send_header("content-type", "application/json"); self.end_headers(); self.wfile.write(json.dumps(out).encode())
+        self.send_response(200)
+        self.send_header("content-type", "application/json")
+        self.end_headers()
+        self.wfile.write(json.dumps(out).encode())
 
     def log_message(self, *a):
         pass
@@ -38,7 +47,8 @@ class Gateway(unittest.TestCase):
         cls.b = GatewayBackend(f"http://127.0.0.1:{cls.server.server_port}", token_env="LAYA_TEST_GATEWAY_TOKEN", catalogue=CATALOGUE)
 
     def setUp(self):
-        Fake.seen.clear(); Fake.mode = "ok"
+        Fake.seen.clear()
+        Fake.mode = "ok"
 
     def test_a_cell_becomes_a_named_model_call_at_its_effort(self):
         text, usage = self.b.ask("claude-code/claude-opus-5-5@high", [{"role": "user", "content": "x"}])

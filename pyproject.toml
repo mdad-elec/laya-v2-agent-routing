@@ -1,0 +1,16 @@
+[project]
+name = "laya-routing"
+version = "0.1.0"
+description = "A general, session-aware LLM router: a measured Model Atlas and a Laya routing fine-tune, on public data."
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+
+[tool.ruff]
+line-length = 210  # prompt templates and fixture rows are long string literals
+target-version = "py312"
+# Vendored upstream code keeps its authors' style; the frozen v2 study is a record, not linted anew.
+extend-exclude = ["suites/*/vendor", "studies"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E731"]

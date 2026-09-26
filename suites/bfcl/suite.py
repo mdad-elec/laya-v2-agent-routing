@@ -138,7 +138,7 @@ class BFCL(Suite):
                 results, _ = execute_multi_turn_func_call(
                     func_call_list=calls, initial_config=entry["initial_config"], involved_classes=entry["involved_classes"],
                     model_name=run_name, test_entry_id=entry["id"], long_context=False, is_evaL_run=False)
-                messages.append({"role": "user", "content": "Execution results:\n" + "\n".join(f"{c}: {r}" for c, r in zip(calls, results))})
+                messages.append({"role": "user", "content": "Execution results:\n" + "\n".join(f"{c}: {r}" for c, r in zip(calls, results, strict=True))})
             decoded_turns.append(steps)
         verdict = multi_turn_checker(decoded_turns, item.gold["ground_truth"], entry, "multi_turn_base", run_name)
         return (1.0 if verdict.get("valid") else 0.0), messages
