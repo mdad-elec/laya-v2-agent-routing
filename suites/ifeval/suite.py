@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import urllib.request
 
-from suites.base import Item, Suite
+from suites.base import Item, Suite, read_jsonl
 
 REVISION = "e6890f85757dd84e27ca6df2dd30651dafad28e0"
 
@@ -50,7 +50,7 @@ class IFEval(Suite):
         path = self.cache_dir() / "input_data.jsonl"
         if not path.exists():
             urllib.request.urlretrieve(f"https://raw.githubusercontent.com/google-research/google-research/{REVISION}/instruction_following_eval/data/input_data.jsonl", path)
-        return [to_item(json.loads(line)) for line in path.read_text().splitlines() if line.strip()]
+        return [to_item(row) for row in read_jsonl(path)]
 
     def check(self, item: Item, answer: str) -> float:
         from suites.ifeval.vendor import instructions_registry

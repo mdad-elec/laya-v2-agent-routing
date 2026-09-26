@@ -1,7 +1,7 @@
 """The suite contract every public benchmark implements."""
 import unittest
 
-from suites.base import Item, Suite, split_of
+from suites.base import Item, Suite, read_jsonl, split_of
 
 
 class Toy(Suite):
@@ -36,6 +36,17 @@ class Contract(unittest.TestCase):
         self.assertEqual(t.card()["licence"], "MIT")
         self.assertEqual(t.card()["revision"], "abc123")
         self.assertIn(t.card()["domain"], ("code", "sql", "fin_table", "instruct", "knowledge", "long_ctx", "chat", "tools_multiturn"))
+
+    def test_jsonl_is_split_on_newlines_only_never_on_unicode_line_separators(self):
+        # str.splitlines() also splits on U+2028/U+2029/U+0085, which a JSON string may contain
+        # raw; measured: Arena-Hard's question file failed to parse ("Unterminated string").
+        import json
+        import tempfile
+        from pathlib import Path
+
+        path = Path(tempfile.mkdtemp()) / "x.jsonl"
+        path.write_text(json.dumps({"a": "line one\u2028still one"}, ensure_ascii=False) + "\n" + json.dumps({"b": 2}) + "\n\n")
+        self.assertEqual(read_jsonl(path), [{"a": "line one\u2028still one"}, {"b": 2}])
 
     def test_the_checker_scores_in_zero_one(self):
         t = Toy()

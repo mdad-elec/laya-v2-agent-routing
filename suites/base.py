@@ -32,6 +32,14 @@ class Item:
         return hashlib.sha256(f"{self.suite}\x00{self.native_id}".encode()).hexdigest()[:16]
 
 
+def read_jsonl(path) -> list[dict]:
+    """JSON Lines, split on "\\n" ONLY. str.splitlines() also splits on U+2028/U+2029/U+0085,
+    which JSON strings may hold raw, and cut a record in half (measured on Arena-Hard v2)."""
+    import json
+
+    return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").split("\n") if line.strip()]
+
+
 def split_of(item_id: str) -> str:
     """'tune' or 'held', about half each, fixed forever by the id and the salt."""
     h = int(hashlib.sha256(f"{SPLIT_SALT}\x00{item_id}".encode()).hexdigest()[:8], 16)

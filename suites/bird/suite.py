@@ -19,7 +19,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-from suites.base import Item, Suite
+from suites.base import Item, Suite, read_jsonl
 
 REVISION = "f65faf4ae3b638c1fa6df1d3370c8d92c8366301"
 DEV_ZIP = "https://bird-bench.oss-cn-beijing.aliyuncs.com/dev.zip"
@@ -105,7 +105,7 @@ class BIRDMiniDev(Suite):
         if not path.exists():
             urllib.request.urlretrieve(f"https://huggingface.co/datasets/birdsql/bird_mini_dev/resolve/{REVISION}/data/mini_dev_sqlite-00000-of-00001.json", path)
         text = path.read_text().strip()
-        rows = json.loads(text) if text.startswith("[") else [json.loads(line) for line in text.splitlines() if line.strip()]
+        rows = json.loads(text) if text.startswith("[") else read_jsonl(path)
         schemas: dict[str, str] = {}
         gold = self._gold_results(rows)
         items, self.excluded = [], {}

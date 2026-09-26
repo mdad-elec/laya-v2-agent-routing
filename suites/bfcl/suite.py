@@ -21,7 +21,7 @@ import re
 import urllib.request
 import uuid
 
-from suites.base import Item, Suite
+from suites.base import Item, Suite, read_jsonl
 
 REVISION = "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8"
 BASE = f"https://raw.githubusercontent.com/ShishirPatil/gorilla/{REVISION}/berkeley-function-call-leaderboard/bfcl_eval/data"
@@ -83,7 +83,7 @@ def decode_calls(text: str) -> list[str]:
 def _fetch_jsonl(path, url) -> list[dict]:
     if not path.exists():
         urllib.request.urlretrieve(url, path)
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+    return read_jsonl(path)
 
 
 class BFCL(Suite):
