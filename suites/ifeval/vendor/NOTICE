@@ -1,0 +1,6 @@
+instructions.py, instructions_registry.py and instructions_util.py are vendored unmodified from
+google-research/google-research, instruction_following_eval/, at commit
+e6890f85757dd84e27ca6df2dd30651dafad28e0 (Apache License 2.0, Copyright The Google Research
+Authors). The only change is the package path in two import lines
+(`instruction_following_eval` -> `suites.ifeval.vendor`). IFEval: Zhou et al., "Instruction-Following
+Evaluation for Large Language Models", arXiv:2311.07911.
