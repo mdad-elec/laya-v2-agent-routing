@@ -1,0 +1,9 @@
+Vendored from ShishirPatil/gorilla, berkeley-function-call-leaderboard/bfcl_eval, at commit
+6ea57973c7a6097fd7c5915698c54c17c5b1b6c8 (Apache License 2.0, Copyright the Gorilla/BFCL authors):
+- eval_checker/multi_turn_eval/multi_turn_utils.py, multi_turn_checker.py
+- constants/executable_backend_config.py
+- eval_checker/multi_turn_eval/func_source_code/{gorilla_file_system,long_context,math_api,message_api,
+  posting_api,ticket_api,trading_bot,travel_booking,vehicle_control}.py
+The only changes are module paths (`bfcl_eval.…` -> `suites.bfcl.vendor.…`), in imports and in the
+backend path strings the executor imports by. BFCL: Patil et al., "The Berkeley Function Calling
+Leaderboard (BFCL): From Tool Use to Agentic Evaluation of Large Language Models", ICML 2025.

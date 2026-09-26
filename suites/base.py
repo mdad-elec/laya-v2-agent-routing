@@ -52,6 +52,13 @@ class Suite:
     def check(self, item: Item, answer: str) -> float:
         raise NotImplementedError
 
+    def run(self, item: Item, ask) -> tuple[float, list]:
+        """Score one item with `ask(messages) -> text`, the model under test. Most suites are one
+        ask and one check; an agentic suite (BFCL) overrides this with its own loop. Returns the
+        score and the transcript of what was asked and answered."""
+        answer = ask(item.messages)
+        return self.check(item, answer), [*item.messages, {"role": "assistant", "content": answer}]
+
     def card(self) -> dict:
         assert self.domain in DOMAINS, self.domain
         return {"suite": self.name, "domain": self.domain, "licence": self.licence, "source": self.source,
