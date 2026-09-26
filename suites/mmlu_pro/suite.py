@@ -13,7 +13,7 @@ import urllib.request
 from suites.base import Item, Suite
 
 LETTERS = "ABCDEFGHIJ"
-_FORMS = (re.compile(r"answer is \(?([A-J])\)?", re.I), re.compile(r"^\s*answer\s*[:：]\s*\(?([A-J])\)?", re.I | re.M))
+_FORMS = (re.compile(r"answer is \(?([A-J])\)?", re.I), re.compile(r"\banswer\s*[:：]\s*\(?([A-J])\)?", re.I))
 
 
 def extract_letter(answer: str) -> str | None:

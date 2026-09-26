@@ -20,6 +20,7 @@ class MMLUProSuite(unittest.TestCase):
         s = MMLUPro()
         self.assertEqual(s.check(item, "Reasoning... the answer is (C)"), 1.0)
         self.assertEqual(s.check(item, "Answer: C"), 1.0)
+        self.assertEqual(s.check(item, "So, after all that. Answer: C"), 1.0, "mid-line, as models write it")
         self.assertEqual(s.check(item, "first I thought the answer is (A) but the answer is (C)"), 1.0)
         self.assertEqual(s.check(item, "the answer is (B)"), 0.0)
         self.assertEqual(s.check(item, "I cannot tell"), 0.0)
