@@ -1,0 +1,195 @@
+{
+ "schema": "atlas-catalogue@1",
+ "source": "dss-platform fleet/providers.json @ origin/main",
+ "as_of": "2026-09-26",
+ "models": [
+  {
+   "model": "nim/nvidia/nemotron-3-super-120b-a12b",
+   "efforts": [
+    "off",
+    "on"
+   ],
+   "access": "open_ai_compatible",
+   "context_window": 131072,
+   "seat_status": "servable"
+  },
+  {
+   "model": "claude-code/claude-opus-5-5",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 1000000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "claude-code/claude-fable-5-1",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 1000000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "claude-code/claude-opus-5",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 1000000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "claude-code/claude-fable-5",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 1000000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "claude-code/claude-sonnet-5",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 1000000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "spark-27b/qwen3.8-27b",
+   "efforts": [
+    "off",
+    "on"
+   ],
+   "access": "open_ai_compatible",
+   "context_window": 262144,
+   "seat_status": "servable"
+  },
+  {
+   "model": "pair/hermes3:8b",
+   "efforts": [
+    "none"
+   ],
+   "access": "open_ai_compatible",
+   "context_window": 8192,
+   "seat_status": "servable"
+  },
+  {
+   "model": "pair/qwen2.5:3b",
+   "efforts": [
+    "none"
+   ],
+   "access": "open_ai_compatible",
+   "context_window": 8192,
+   "seat_status": "servable"
+  },
+  {
+   "model": "codex/gpt-6-astra",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
+    "ultra"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "codex/gpt-6-sol",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
+    "ultra"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "withdrawn@2026-09-26"
+  },
+  {
+   "model": "codex/gpt-6-luna",
+   "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "withdrawn@2026-09-26"
+  },
+  {
+   "model": "codex/gpt-5.6-sol",
+   "efforts": [
+    "none",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
+    "ultra"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "codex/gpt-5.6-terra",
+   "efforts": [
+    "none",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
+    "ultra"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "servable"
+  },
+  {
+   "model": "codex/gpt-5.6-luna",
+   "efforts": [
+    "none",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "access": "cli_spawn",
+   "context_window": 272000,
+   "seat_status": "servable"
+  }
+ ]
+}
