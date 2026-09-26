@@ -74,17 +74,17 @@ def generate(task: str, seed: int, target_tokens: int = 32_000) -> Item:
     elif task == "common_words":
         common = rng.sample(WORDS, 10)
         rare = [w for w in WORDS if w not in common]
-        words: list[str] = []
-        per = max(1, target // (8 * 40))
-        for w in common:
-            words += [w] * (per * 3)
-        # Measured as the lines will be written ("12345. word\n"), not as bare words.
-        size = sum(len(f"{i + 1}. {w}\n") for i, w in enumerate(words))
-        while size < target - 400:
-            w = rng.choice(rare)
-            words.append(w)
-            size += len(f"{len(words)}. {w}\n")
+        # Sized from the lines as they will be written ("12345. word\n", ~13 chars): the ten common
+        # words take about 30% of the lines, the rest is rare filler, and the whole list stops at the
+        # target. (Sizing the repeats from the target alone overshot to ~39k tokens: measured.)
+        lines = max(40, (target - 400) // 13)
+        per = max(2, int(lines * 0.30) // len(common))
+        words: list[str] = [w for w in common for _ in range(per)]
+        while len(words) < lines:
+            words.append(rng.choice(rare))
         rng.shuffle(words)
+        while len(words) > 1 and sum(len(f"{i + 1}. {w}\n") for i, w in enumerate(words)) > target - 400:
+            words.pop()
         context = "\n".join(f"{i + 1}. {w}" for i, w in enumerate(words))
         prompt = (f"Below is a numbered list of words. In these words, some appear more often than others. Memorize the ones that appear most often.\n"
                   f"{context}\nQuestion: What are the 10 most common words in the above list?")
