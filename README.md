@@ -15,9 +15,10 @@ This repository holds two things:
 Laya-v2 won on the asks it was tuned on, and failed RouterBench's general tasks (0.01–0.37 band accuracy).
 It also read only the latest user message, so a short follow-up to hard work ("yes, go ahead") looked easy.
 g1 fixes both:
-- **General labels.** Every catalogue model is measured at every reasoning effort on eight public,
-  machine-checked suites (below). The label for an item is "the cheapest cell that solves it", taken
-  from those measurements.
+- **General labels.** The label for an item is "the cheapest price tier that solves it", taken from
+  public item-level outcomes: LLMRouterBench (33 models × 21 datasets) and BFCL's per-entry results
+  (115 models on multi-turn tool use). Laya learns how hard a task is; the Atlas maps that onto the
+  models actually served. Only what no public source covers is measured here, on the eight suites below.
 - **Session-aware input.** Laya is fine-tuned on a compact session digest: the request, prior turns,
   the tools offered, and what the tools did. The digest never includes model or seat names; including
   them is what collapsed v2's accuracy from 0.711 to 0.342.
