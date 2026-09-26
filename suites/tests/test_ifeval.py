@@ -15,14 +15,27 @@ class IFEvalSuite(unittest.TestCase):
         self.assertEqual(s.check(item, ok.capitalize()), 0.0, "one capital letter breaks the lowercase instruction")
         self.assertEqual(s.check(item, "rivers flow."), 0.0, "too short")
 
+    def test_the_benchmark_s_randomised_item_scores_the_same_whatever_the_random_state(self):
+        # IFEval item 1122 asks for the letter '#'; the upstream checker swaps a non-letter for a
+        # random letter, which made this item a coin flip before the per-item seed.
+        import random
+
+        row = {"key": 1122, "prompt": "Write a riddle. Use lowercase only, and use the letter '#' at least 4 times.",
+               "instruction_id_list": ["change_case:english_lowercase", "keywords:letter_frequency"],
+               "kwargs": [{}, {"let_relation": "at least", "letter": "#", "let_frequency": 4}]}
+        s, item = IFEval(), to_item(row)
+        answer = "what has keys but opens no locks, a space but no room? a keyboard, of course."
+        results = set()
+        for seed in range(12):
+            random.seed(seed)
+            results.add(s.check(item, answer))
+        self.assertEqual(len(results), 1, results)
+
     def test_the_item_carries_the_prompt_verbatim(self):
         item = to_item(ROW)
         self.assertEqual(item.messages, [{"role": "user", "content": ROW["prompt"]}])
         self.assertEqual(item.native_id, "1000")
 
-
-if __name__ == "__main__":
-    unittest.main()
 
 
 class Golden(unittest.TestCase):
@@ -45,6 +58,13 @@ class Golden(unittest.TestCase):
         responses = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
         # A response whose prompt is worded differently from the input file cannot be scored; the
         # paper's denominator is all 541 prompts, so it counts against the total.
-        passed = sum(s.check(items[r["prompt"]], r["response"]) for r in responses if r["prompt"] in items)
+        runs = [sum(s.check(items[r["prompt"]], r["response"]) for r in responses if r["prompt"] in items) for _ in range(2)]
         self.assertEqual(len(responses), 541)
-        self.assertAlmostEqual(100 * passed / 541, 76.89, places=2)
+        self.assertEqual(runs[0], runs[1], "the checker gives one answer per response")
+        # The paper's 76.89% = 416/541 was one draw of the benchmark's single randomised item
+        # (1122, letter '#'); the seeded checker lands on one side of it, never further.
+        self.assertIn(runs[0], (416, 417), f"{runs[0]}/541 = {100 * runs[0] / 541:.2f}%")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -59,6 +59,12 @@ class IFEval(Suite):
 
         if not answer.strip():
             return 0.0
+        # IFEval's own checkers draw random values for an argument they reject: item 1122 asks for
+        # the letter '#', and LetterFrequencyChecker swaps any non-letter for a RANDOM one, so that
+        # item scored differently run to run. Seeded from the item id: one answer per response.
+        import random
+
+        random.seed(item.item_id)
         for index, instruction_id in enumerate(item.gold["ids"]):
             instruction = instructions_registry.INSTRUCTION_DICT[instruction_id](instruction_id)
             kwargs = {k: v for k, v in (item.gold["kwargs"][index] or {}).items() if v is not None}
