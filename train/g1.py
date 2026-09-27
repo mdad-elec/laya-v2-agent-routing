@@ -162,6 +162,9 @@ def main() -> None:
     tok = AutoTokenizer.from_pretrained(str(Path(args.base) / "tokenizer"))
     net = G1(load_encoder(Path(args.base)), desc_width=desc.shape[1]).to(device)
     freeze_bottom(net.encoder)
+    # Recompute activations in the backward pass: the same maths in less memory (a batch of 32 x 512
+    # tokens reached the 0.12 memory cap without it, 2026-09-27).
+    net.encoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     heads = list(net.proj.parameters()) + list(net.cell.parameters())
     enc = [p for p in net.encoder.parameters() if p.requires_grad]
     opt = torch.optim.AdamW([{"params": enc, "lr": 2e-5}, {"params": heads, "lr": 1e-3}], weight_decay=0.01)
