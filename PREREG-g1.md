@@ -160,3 +160,55 @@ LLMRouterBench's 41 models from the checkpoint scored on F1–F3.
   `split_of("model/" + name)` is `held`. It is scored only for the zero-shot report: its P(solve)
   on the held models' held items, against the scored checkpoint on the same rows.
 - Neither checkpoint's training can see the other's evaluation rows.
+
+## Amendment 3 (2026-09-27): F3's exact setting and formulas; the model list
+
+Written before any F3 number is computed, and before any g1 training.
+
+### The model list
+
+- LLMRouterBench @ `0e5af1b8` lists `openrouter`, a commercial router, among its models. It is a
+  *reference*, never a trainable cell, so the pool is 39 models. Amendment 1 said 41; 39 is correct.
+- BFCL-Result's `-FC` names (native function calling) and its prompted names are two cells of one
+  model, described with the same model descriptor and a `native_tools` flag.
+
+### F3, exactly
+
+- **Authority.** LLMRouterBench's code @ `c77cb0506949d8f959e97967d2fefca0e8ff1b05`
+  (`config/baseline_config_performance_cost.yaml`) and its paper's §6 formulas, since the repo ships
+  no code for these metrics.
+- **Setting.** Its performance-cost setting.
+  - **Models:** the 13 flagship models named in that config (all 13 are in our data).
+  - **Datasets:** its 10 datasets, minus GPQA (excluded, as above): aime, livemathbench, hle,
+    livecodebench, mmlupro, swe-bench, simpleqa, tau2 and arenahard.
+  - **Split:** routers are fitted on our **tune** items of these and scored on our **held** items.
+    It's one fixed split, not their five seeds; stated as a difference.
+- **Per-item cost** is the record's own `cost` for the chosen model. Accuracy is `score`, macro over
+  datasets (AvgAcc).
+- **Configurations.**
+  - g1 sweeps τ over {0.05, 0.10, …, 0.95}.
+  - Avengers-Pro and EmbedLLM sweep their own trade-off parameter as their adaptors expose it,
+    otherwise over the same 19-point grid.
+  - Each single model is one configuration.
+- **Best Single (ℬ)** is the model with the highest tune AvgAcc.
+- **The formulas:**
+  - PerfGain = AvgAcc(θ*)/AvgAcc(ℬ) − 1, where θ* is the configuration with the highest AvgAcc on held.
+  - CostSave = 1 − Cost(θ†)/Cost(ℬ), where θ† is the cheapest configuration with AvgAcc(θ) ≥ AvgAcc(ℬ).
+    If there is none, CostSave is reported as "none reaches ℬ".
+  - ParetoDist: the mean L1 distance of a router's configurations to the frontier of the union of
+    all routers' and single models' configurations, in min-max-normalised (AvgAcc, log Cost).
+- **The recall slice** is the held items where ≤ 3 of the 13 models score ≥ 0.5. It is scored as
+  θ*'s accuracy on those items.
+- **The bar.** g1 beats Avengers-Pro and EmbedLLM each:
+  - on PerfGain and on slice accuracy, with a paired bootstrap over held items stratified by
+    dataset, 10,000 resamples, 90% CI lower bound of the difference > 0;
+  - and on CostSave (point estimate).
+  - ParetoDist is reported.
+- **A θ read.** Choosing θ* and θ† on held is part of the metric's definition, not tuning: every
+  configuration is fixed from tune before the read.
+
+### F1's baseline, exactly
+
+- SR-KNN re-fitted on tune uses k = 1 (the paper's "1-nearest-neighbor"). A k = 1 vote needs no tie rule.
+- The in-sample reproduction runs over all 970 rows. Only aggregate scores are computed from it, and
+  it is logged in `results/g1/heldout-ledger.jsonl`.
