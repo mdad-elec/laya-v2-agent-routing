@@ -269,3 +269,25 @@ Written before any g1 model is trained.
     computed on the LLMRouterBench calibration items with their recorded costs, over the F2 pool's
     models that LLMRouterBench has. It is fixed before the F2 run and never touched by RouterArena data.
 - **The probe checkpoint** trains identically, without the outcomes of held-out models (Amendment 2).
+
+## Amendment 6 (2026-09-27): the read's mechanics
+
+Written before any read of F1 or F3, and before g1's training finished.
+
+- **The checkpoint** scored is `best.pt`, the lowest calibration BCE. τ_F1 comes from
+  `train.calibrate` on that same checkpoint. The read refuses mismatched steps.
+  - Gradient checkpointing is on in the encoder: the same computation in less memory. The first run
+    hit its own 0.12 memory cap, and the Spark's other services were untouched.
+- **F1 bootstrap.**
+  - 2,000 paired resamples of held trajectories, seed 20260927.
+  - A trajectory drawn twice is scored as two trajectories (its rows are renamed), so repeats never merge.
+  - The statistic is g1's Combined minus the tune-fitted SR-KNN's, both from the benchmark's own
+    scorer. Its token counts are memoised, which a test shows changes no number.
+- **F3 bootstrap.**
+  - 10,000 paired resamples, stratified by dataset, seed 20260927.
+  - θ* is chosen once on the full held set and kept fixed inside the resamples.
+  - PerfGain's comparison is the macro AvgAcc difference of the two θ* configurations: same sign,
+    and ℬ is common to both.
+- **F2** is not part of this read. It needs a RouterArena inference run, which is an owner spend gate.
+  Until F2 is met, nothing is pushed.
+- **The results.** `results/g1/verdict.json`, and a line in `results/g1/heldout-ledger.jsonl`.
