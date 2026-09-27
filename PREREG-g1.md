@@ -237,3 +237,35 @@ Written before any F3 prediction is scored and before any g1 training.
     (argmax P̂ if none), over the same τ grid.
 - **Every configuration** of every router is fixed from tune before the F3 read. The held
   predictions are computed first and scored once, together with g1's.
+
+## Amendment 5 (2026-09-27): g1's recipe, calibration splits and τ rules, fixed before training
+
+Written before any g1 model is trained.
+
+- **Start.** The public root `convaiinnovations/laya` @ `55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851`
+  (its ModernBERT-large encoder only). Not the v2 checkpoint, which saw estate asks.
+- **Architecture.**
+  - The digest (router/digest.py, ≤ 512 tokens) is mean-pooled from the encoder and projected to θ ∈ R^64.
+  - The cell descriptor is the public block of atlas/descriptors.py (63 values) plus a measured block:
+    8 domains, each a value and a mask. It goes through an MLP (256, 256, GELU) to (a ∈ R^64, b).
+  - The logit is θ·a − b. The loss is binary cross-entropy on targets in [0, 1].
+  - Each source's share of the loss: LLMRouterBench 0.5, BFCL 0.25, TwinRouterBench 0.25.
+  - During training each cell's measured block is dropped (value and mask zeroed) with probability
+    0.5, so a cell with public data only is a trained case.
+- **Calibration splits** (inside tune; never train):
+  - 5% of LLMRouterBench and BFCL tune prompts;
+  - 20% of TwinRouterBench tune trajectories;
+  - both by salted hash (`g1-cal/`).
+  - TwinRouterBench calibration rows are still tune rows: they never touch F1's held rows.
+- **Optimisation.** AdamW with weight decay 0.01.
+  - The encoder uses lr 2e-5 with its bottom 8 layers frozen; heads use lr 1e-3.
+  - bf16, 3 epochs over the training texts, a batch of 32 texts with all their cells.
+  - Early stopping on calibration BCE, which is the only thing calibration is read for, besides τ below.
+- **Policy and τ.** Pick the cheapest candidate with P ≥ τ, else the argmax.
+  - **F1:** candidates are the 4 pool tiers; cost is the tier order; τ_F1 maximises the
+    benchmark's Combined score on the TwinRouterBench calibration rows.
+  - **F3:** τ sweeps the 19-point grid (Amendment 3). Expected cost is each model's mean cost per tune item.
+  - **F2:** τ_F2 maximises RouterArena's arena-score formula (β = 0.1, its own `compute_arena_score`),
+    computed on the LLMRouterBench calibration items with their recorded costs, over the F2 pool's
+    models that LLMRouterBench has. It is fixed before the F2 run and never touched by RouterArena data.
+- **The probe checkpoint** trains identically, without the outcomes of held-out models (Amendment 2).
