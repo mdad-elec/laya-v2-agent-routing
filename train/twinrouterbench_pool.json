@@ -1,0 +1,9 @@
+{
+ "source": "TwinRouterBench data/dynamic/tier_to_model.json @7cbb0dea (schema 11)",
+ "tier_to_model": {
+  "low": "deepseek/deepseek-v3.2",
+  "mid": "minimax/minimax-m2.7",
+  "mid_high": "google/gemini-3-flash-preview",
+  "high": "anthropic/claude-opus-4.6"
+ }
+}

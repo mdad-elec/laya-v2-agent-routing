@@ -24,6 +24,10 @@ jobs:
         run: python -m unittest discover -s labels/tests -t .
       - name: eval (F1's scorer is TwinRouterBench's own, at the pinned commit)
         run: python -m unittest discover -s eval/tests -t .
+      - name: train (the g1 model and its data rules; torch CPU)
+        run: |
+          pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m unittest discover -s train/tests -t .
       - name: router (the session digest; its budget test reads TwinRouterBench at the pinned commit)
         run: python -m unittest discover -s router/tests -t .
       - name: the frozen v2 study still reproduces

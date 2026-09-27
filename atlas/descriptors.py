@@ -163,3 +163,22 @@ def vector(desc: dict) -> list[float]:
     out += _pair(n["params_b"], lambda v: math.log10(v) / 3.0) + _pair(n["active_b"], lambda v: math.log10(v) / 3.0)
     out += _pair(n["reasoning"], float) + [float(n["native_tools"])]
     return out
+
+
+def main() -> None:
+    import argparse
+    import json
+
+    ap = argparse.ArgumentParser(description="Write {model: public descriptor vector} for a list of model names")
+    ap.add_argument("--models", required=True, help="a JSON list of model names")
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args()
+    table = EpochTable.load()
+    names = json.loads(Path(args.models).read_text(encoding="utf-8"))
+    described = {m: describe(m, table) for m in names}
+    Path(args.out).write_text(json.dumps({m: vector(x) for m, x in described.items()}), encoding="utf-8")
+    print(json.dumps({"models": len(names), "joined_to_epoch": sum(1 for x in described.values() if x["epoch_version"]), "width": WIDTH}))
+
+
+if __name__ == "__main__":
+    main()
