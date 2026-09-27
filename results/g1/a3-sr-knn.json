@@ -1,0 +1,72 @@
+{
+ "prereg_sha": "c948f4aa8912402883416b1bdd2e637d50ee4233",
+ "bar": "F1",
+ "baseline": "SR-KNN (Qwen/Qwen3-Embedding-0.6B + 'other' one-hot, cosine)",
+ "published_in_sample_combined": 77.89,
+ "in_sample": {
+  "1nn_leave_one_out": {
+   "case_pass_rate_percent": 84.23,
+   "case_exact_match_percent": 70.0,
+   "trajectory_pass_rate_percent": 60.41,
+   "cost_savings_score_percent": 17.11,
+   "combined_score_percent": 57.94
+  },
+  "5nn_including_self": {
+   "case_pass_rate_percent": 92.68,
+   "case_exact_match_percent": 84.02,
+   "trajectory_pass_rate_percent": 74.85,
+   "cost_savings_score_percent": 44.57,
+   "combined_score_percent": 74.03
+  },
+  "1nn_including_self": {
+   "case_pass_rate_percent": 100.0,
+   "case_exact_match_percent": 100.0,
+   "trajectory_pass_rate_percent": 100.0,
+   "cost_savings_score_percent": 62.94,
+   "combined_score_percent": 90.74
+  }
+ },
+ "tune_cv": {
+  "rows": 500,
+  "trajectories": 257,
+  "folds": 5,
+  "k": 1,
+  "case_pass_rate_percent": 86.0,
+  "case_exact_match_percent": 71.0,
+  "trajectory_pass_rate_percent": 66.4,
+  "cost_savings_score_percent": 36.83,
+  "combined_score_percent": 65.06
+ },
+ "tune_constant_routers": {
+  "always_low": {
+   "case_pass_rate_percent": 68.8,
+   "case_exact_match_percent": 68.8,
+   "trajectory_pass_rate_percent": 53.4,
+   "cost_savings_score_percent": 48.8,
+   "combined_score_percent": 59.95
+  },
+  "always_mid": {
+   "case_pass_rate_percent": 75.4,
+   "case_exact_match_percent": 6.6,
+   "trajectory_pass_rate_percent": 61.2,
+   "cost_savings_score_percent": 53.98,
+   "combined_score_percent": 49.3
+  },
+  "always_mid_high": {
+   "case_pass_rate_percent": 81.8,
+   "case_exact_match_percent": 6.4,
+   "trajectory_pass_rate_percent": 63.6,
+   "cost_savings_score_percent": 52.83,
+   "combined_score_percent": 51.16
+  },
+  "always_high": {
+   "case_pass_rate_percent": 100.0,
+   "case_exact_match_percent": 18.2,
+   "trajectory_pass_rate_percent": 100.0,
+   "cost_savings_score_percent": 0.0,
+   "combined_score_percent": 54.55
+  }
+ },
+ "reproduced": false,
+ "why_not": "No reading of 'in-sample 1-nearest-neighbor over question-bank embeddings' with the adapter's embedder and flattening gives 77.89: leave-one-out 1-NN is lower, 1-NN including the row itself is trivially 100% exact. The paper does not state the exclusion rule, k, or the embedding truncation. F1 part 1 therefore compares against the well-defined tune-fitted SR-KNN; part 2 keeps the published 77.89 as stated."
+}

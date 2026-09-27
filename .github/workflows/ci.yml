@@ -22,6 +22,8 @@ jobs:
         run: python -m unittest discover -s harness/tests -t .
       - name: labels
         run: python -m unittest discover -s labels/tests -t .
+      - name: eval (F1's scorer is TwinRouterBench's own, at the pinned commit)
+        run: python -m unittest discover -s eval/tests -t .
       - name: router (the session digest; its budget test reads TwinRouterBench at the pinned commit)
         run: python -m unittest discover -s router/tests -t .
       - name: the frozen v2 study still reproduces
