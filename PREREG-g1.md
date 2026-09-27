@@ -212,3 +212,28 @@ Written before any F3 number is computed, and before any g1 training.
 - SR-KNN re-fitted on tune uses k = 1 (the paper's "1-nearest-neighbor"). A k = 1 vote needs no tie rule.
 - The in-sample reproduction runs over all 970 rows. Only aggregate scores are computed from it, and
   it is logged in `results/g1/heldout-ledger.jsonl`.
+
+## Amendment 4 (2026-09-27): how F3's two baselines are run
+
+Written before any F3 prediction is scored and before any g1 training.
+
+- **Embedder (both baselines, and SR-KNN in F1).** Qwen/Qwen3-Embedding-0.6B, run on the Spark.
+  - Avengers-Pro's config names gte-Qwen2-7B-instruct behind a remote API. We don't run it: the
+    only GPU box with room would put the Spark's resident 27B at risk.
+  - LLMRouterBench's own ablation found no significant difference between gte-Qwen2-7B,
+    nli-bert-base and all-MiniLM-L6-v2 for Avengers, EmbedLLM and GraphRouter.
+  - The same F3 read therefore also reports both baselines with all-MiniLM-L6-v2 (CPU), as a
+    sensitivity check.
+- **Avengers-Pro.** `baselines/AvengersPro/balance_cluster_router.py` @ `c77cb050`, run unmodified.
+  - Its `balance_config.json` values: 25 clusters, top_k 3, β 9, seed 42, max_router 1.
+  - Its query-embedding cache is prefilled with our vectors, and its network embedder raises on any miss.
+  - Trade-off: performance_weight = α, cost_sensitivity = 1 − α, for α on the 19-point grid.
+- **EmbedLLM.** `baselines/EmbedLLM/algorithm/mf.py`'s `TextMF` @ `c77cb050` (embedding dim 1024,
+  α-noise 0.05, Adam 1e-4, weight decay 1e-5, batch 2048).
+  - Label: 1 if score ≥ 0.5.
+  - Its training script selects the epoch on the TEST set. We don't: the epoch count is chosen on
+    10% of tune prompts held aside (by prompt hash), and the model is then refit on all of tune.
+  - EmbedLLM has no cost knob. It gets g1's policy: the cheapest model with P̂(correct) ≥ τ
+    (argmax P̂ if none), over the same τ grid.
+- **Every configuration** of every router is fixed from tune before the F3 read. The held
+  predictions are computed first and scored once, together with g1's.
