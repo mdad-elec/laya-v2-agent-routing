@@ -147,3 +147,16 @@ before this amendment (`results/g1/s3-gate.json`) name the original version, blo
 - After a miss, another attempt needs a new dated amendment before the next read, and the verdict
   reports how many reads were made.
 - A bar not met is reported as not met.
+
+## Amendment 2 (2026-09-27): held-out models are a probe, not a cut from the scored checkpoint
+
+Written before any g1 model is trained and before any held item is read. Amendment 1's "a
+held-out model never contributes training outcomes" would have removed about half of
+LLMRouterBench's 41 models from the checkpoint scored on F1–F3.
+
+**The corrected rule:**
+- **The scored checkpoint** (F1–F3, and everything "reported") trains on the tune items of every model.
+- **A separate probe checkpoint** trains identically, but without the outcomes of any model whose
+  `split_of("model/" + name)` is `held`. It is scored only for the zero-shot report: its P(solve)
+  on the held models' held items, against the scored checkpoint on the same rows.
+- Neither checkpoint's training can see the other's evaluation rows.
