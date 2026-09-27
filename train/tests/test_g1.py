@@ -59,5 +59,21 @@ class Model(unittest.TestCase):
         self.assertEqual(v[0, 3 + MEASURED_WIDTH // 2].item(), 1.0)
 
 
+
+class Predict(unittest.TestCase):
+    def test_probabilities_are_one_row_per_text_one_column_per_cell(self):
+        from train.predict import probabilities
+
+        class Tok:
+            def __call__(self, texts, **kw):
+                ids = torch.tensor([[1 + (hash(t) % 40), 2, 3] for t in texts])
+                return type("E", (dict,), {"to": lambda self, d: self})({"input_ids": ids, "attention_mask": torch.ones_like(ids)})
+
+        net = G1(StubEncoder(), desc_width=4, d=8)
+        p = probabilities(net, Tok(), ["a", "b", "c"], torch.randn(2, 4), torch.device("cpu"), batch=2)
+        self.assertEqual((len(p), len(p[0])), (3, 2))
+        self.assertTrue(all(0.0 <= x <= 1.0 for row in p for x in row))
+
+
 if __name__ == "__main__":
     unittest.main()
