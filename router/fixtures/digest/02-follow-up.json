@@ -1,0 +1,25 @@
+{
+ "messages": [
+  {
+   "role": "user",
+   "content": "Migrate the billing service from MySQL to Postgres without downtime."
+  },
+  {
+   "role": "assistant",
+   "content": "Here is a four-step plan: dual-write, backfill, verify, cut over."
+  },
+  {
+   "role": "user",
+   "content": "What about the reporting jobs?"
+  },
+  {
+   "role": "assistant",
+   "content": "They read replicas; we move them after the backfill."
+  },
+  {
+   "role": "user",
+   "content": "yes, go ahead"
+  }
+ ],
+ "digest": "harness: \ngoal: Migrate the billing service from MySQL to Postgres without downtime.\nrequest: yes, go ahead\nprior: What about the reporting jobs?\ntools: n=0\nrounds: n=0 last= calls= errors=0 critical=no tests_passed=no\nresult: \nprogress: They read replicas; we move them after the backfill.\ncontext: <4k turn: 3"
+}

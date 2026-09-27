@@ -1,0 +1,49 @@
+{
+ "redact": [
+  "claude-opus-5-5",
+  "gpt-6-sol"
+ ],
+ "tools": [
+  {
+   "type": "function",
+   "function": {
+    "name": "read_file"
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "write_file"
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "bash"
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "grep"
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "todo_write"
+   }
+  }
+ ],
+ "messages": [
+  {
+   "role": "system",
+   "content": "Router seats: claude-opus-5-5 (powerful), gpt-6-sol (small)."
+  },
+  {
+   "role": "user",
+   "content": "Rename the config loader and update its callers; ask gpt-6-sol if unsure."
+  }
+ ],
+ "digest": "harness: Router seats: <model> (powerful), <model> (small).\ngoal: Rename the config loader and update its callers; ask <model> if unsure.\nrequest: \nprior: \ntools: n=5 mutate=1 observe=2 plan=1 shell=1\nrounds: n=0 last= calls= errors=0 critical=no tests_passed=no\nresult: \nprogress: \ncontext: <4k turn: 1"
+}

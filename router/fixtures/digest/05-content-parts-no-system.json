@@ -1,0 +1,24 @@
+{
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "text",
+     "text": "Describe"
+    },
+    {
+     "type": "image_url",
+     "image_url": {
+      "url": "https://example.invalid/c.png"
+     }
+    },
+    {
+     "type": "text",
+     "text": "this chart   and its trend"
+    }
+   ]
+  }
+ ],
+ "digest": "harness: \ngoal: Describe this chart and its trend\nrequest: \nprior: \ntools: n=0\nrounds: n=0 last= calls= errors=0 critical=no tests_passed=no\nresult: \nprogress: \ncontext: <4k turn: 1"
+}

@@ -1,0 +1,73 @@
+{
+ "messages": [
+  {
+   "role": "system",
+   "content": "You are a helpful assistant that can use tools."
+  },
+  {
+   "role": "user",
+   "content": "How far is Rivermist from Stonebrook?"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "type": "function",
+     "function": {
+      "name": "get_zipcode_based_on_city",
+      "arguments": "{\"city\":\"Rivermist\"}"
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "get_zipcode_based_on_city",
+      "arguments": "{\"city\":\"Stonebrook\"}"
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "a",
+   "content": "{\"zipcode\": \"83214\"}"
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "b",
+   "content": "{\"zipcode\": \"74532\"}"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "type": "function",
+     "function": {
+      "name": "estimate_distance",
+      "arguments": "{}"
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "pytest",
+      "arguments": "{}"
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "c",
+   "content": "{\"distance\": 750.0}"
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "d",
+   "content": "==== 4 passed in 0.12s ===="
+  }
+ ],
+ "digest": "harness: You are a helpful assistant that can use tools.\ngoal: How far is Rivermist from Stonebrook?\nrequest: \nprior: \ntools: n=0\nrounds: n=2 last=unknown,test calls=estimate_distance,pytest errors=0 critical=no tests_passed=yes\nresult: ==== 4 passed in 0.12s ====\nprogress: \ncontext: <4k turn: 1"
+}
