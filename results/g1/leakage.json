@@ -1,0 +1,29 @@
+{
+ "prereg_sha": "0d36bedaa702a0da6f631337ccc3ad05c3f287f0",
+ "eval_questions_indexed": 16385,
+ "eval_questions_too_short_to_match": 134,
+ "training_prompts": 24249,
+ "contaminated_prompts": 2913,
+ "by_eval_source": {
+  "suite/mmlu_pro": 1669,
+  "routerarena/full": 1193,
+  "suite/arena_hard_v2": 349,
+  "suite/bfcl_multi_turn": 109,
+  "twinrouterbench": 14
+ },
+ "by_training_dataset": {
+  "mmlupro": 1894,
+  "livecodebench": 385,
+  "arenahard": 350,
+  "arenahard_coding": 128,
+  "arenahard_math": 125,
+  "bfcl_multi_turn_base": 114,
+  "arenahard_creative_writing": 97,
+  "mathbench": 77,
+  "math500": 56,
+  "aime": 21,
+  "hle": 16,
+  "arcc": 11,
+  "medqa": 10
+ }
+}
