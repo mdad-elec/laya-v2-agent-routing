@@ -1,0 +1,60 @@
+{
+ "prereg_sha": "65e2cc8d8d5b359972abe0d7a0a32921b220b7e8",
+ "recipe": "Amendment 5 (g1 recipe 1)",
+ "checkpoint": "best.pt at step 500",
+ "calibration_bce_curve": [
+  {
+   "step": 100,
+   "epoch": 0,
+   "cal_bce": 0.63341
+  },
+  {
+   "step": 200,
+   "epoch": 0,
+   "cal_bce": 0.59605
+  },
+  {
+   "step": 300,
+   "epoch": 0,
+   "cal_bce": 0.5823
+  },
+  {
+   "step": 400,
+   "epoch": 1,
+   "cal_bce": 0.59575
+  },
+  {
+   "step": 500,
+   "epoch": 1,
+   "cal_bce": 0.5712
+  },
+  {
+   "step": 600,
+   "epoch": 1,
+   "cal_bce": 0.57252
+  },
+  {
+   "step": 700,
+   "epoch": 2,
+   "cal_bce": 0.58676
+  },
+  {
+   "step": 800,
+   "epoch": 2,
+   "cal_bce": 0.61759
+  },
+  {
+   "step": 900,
+   "epoch": 2,
+   "cal_bce": 0.58482
+  }
+ ],
+ "best_calibration_bce": 0.5712,
+ "text_blind_yardsticks_on_the_same_calibration_pairs": {
+  "global_rate": 0.70967,
+  "per_cell_rate": 0.5663,
+  "per_cell_x_dataset_rate": 0.52988
+ },
+ "finding": "recipe 1 does not beat a text-blind per-cell success rate on calibration; it is not taken to the held read",
+ "held_items_read": 0
+}
