@@ -497,3 +497,62 @@ by dataset, 10,000 resamples, 90% CI lower bound > 0.
 **Reads.** This is the first read of the stratified HC-test and the third F3 ceiling read in all.
 If it fails, F3 is reported as not reachable by this programme's estimators so far, and the next
 step is the owner's call. The threshold is not moved.
+
+## Amendment 10 (2026-09-30): F3 restated, Phase 3 skipped for F1, and what the held read scores
+
+Written after Phases 1–2 and the F1 climb, and **before any held item of F1 or F3 is read**. The
+owner approved each change below on 2026-09-30. This amendment changes a pre-registered bar,
+**after three HC-test reads of F3** (`results/g1/ceiling-f3*.json`), and says so: those reads
+are the reason for the change, and every one of them stays reported.
+
+### F3, restated
+
+Amendment 3 required g1 to beat Avengers-Pro and EmbedLLM each on PerfGain and slice accuracy
+(CI90 lower bound > 0) and on CostSave (point estimate). On the stratified HC-test the three routers
+are within about a point of each other on AvgAcc, which is the benchmark paper's own finding, while
+our estimator led both on the recall slice. The bar now asks for what the design claims:
+
+- **Non-inferiority on AvgAcc(θ*):** g1 − baseline, 90% CI lower bound > **−0.02**, against each
+  of Avengers-Pro and EmbedLLM.
+- **Superiority on recall-slice accuracy** (held items where ≤ 3 of the 13 models score ≥ 0.5):
+  g1 − baseline, 90% CI lower bound > 0, against each.
+- **CostSave and ParetoDist are reported and no longer gating.** This is part of the restatement
+  and is named here so it is not missed.
+- Mechanics are unchanged: the paired bootstrap over held items stratified by dataset, 10,000
+  resamples, θ* fixed first.
+- **g1's F3 estimator** is Amendment 9's, chosen on HC-train: `blend(0.5)` (EmbedLLM's model and the
+  task row, half each) with the task row's expected cost and the cheapest-above-τ policy. For the
+  read it is fitted on all usable tune items (tune minus calibration, minus contaminated prompts),
+  as are both baselines.
+- **What HC-test already suggests, stated before the read:** the restated bar would NOT have been met
+  there. AvgAcc against Avengers-Pro had a lower bound of −0.033, below −0.02, and the slice lower
+  bounds were −0.017 and −0.003. Held has about 8× the items, so the intervals will be narrower,
+  and the result can go either way.
+
+### Phase 3 is skipped for F1
+
+The Phase 2 proxy brain (logistic regression on Qwen3-Embedding-0.6B vectors, `eval/phase2_f1.py`)
+answers v0's `task`/`domain` at 99.5% on HC-test and routes identically to the v0 vocabulary
+ceiling. A fine-tuned Laya brain has nothing left to recover on F1. **The router scored at F1's held
+read is Phase 2's:** that proxy, the task + stage + errors table, m 0, τ 0.76, fitted on all tune
+rows. Fine-tuning Laya as the System-One brain is deferred to the production wiring (S8), where its
+latency and the Jev wire matter. It is not used for any bar.
+
+### Reported beside it, never selected
+
+- **R4** (stage from tool rounds, `results/g1/hillclimb.jsonl`) is reported at the held read as a
+  secondary router, with its own score, because its HC-test gain came with an HC-train regression
+  that the protocol rejects. It is not the scored router and cannot replace it after the read.
+- The ablations listed in Amendment 1 stay reported.
+
+### Blocked, not done
+
+Growing the labelled agentic data was approved but cannot be done from public data:
+- BFCL-Result has 48 multi-turn tune entries and lacks the pool's mid-tier model.
+- TwinRouterBench's repository ships no labelled steps beyond its 970-row bank.
+It needs a measurement run (owner gate O4).
+
+### Unchanged
+
+F1 (both parts, as Amendment 7 restated part 2), F2, the reads rule, and the rule that nothing is
+pushed until F1, F2 and F3 are all met.
