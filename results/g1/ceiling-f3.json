@@ -1,0 +1,113 @@
+{
+ "prereg_sha": "ffa19e9b0fadeeea671a2a8555b54da7d841f29d",
+ "phase": "1 (oracle-group ceiling)",
+ "bar": "F3 shape, on HC-test",
+ "items": {
+  "tune": 6110,
+  "usable": 4560,
+  "hc_train": 3870,
+  "hc_test": 690,
+  "hc_test_by_dataset": {
+   "aime": 1,
+   "arenahard": 26,
+   "hle": 189,
+   "livecodebench": 50,
+   "livemathbench": 5,
+   "mmlupro": 77,
+   "simpleqa": 269,
+   "swe-bench": 31,
+   "tau2": 42
+  }
+ },
+ "table_menu_hc_train_oof_best_acc": {
+  "global/m=0.0": 0.6108,
+  "global/m=1.0": 0.6108,
+  "global/m=4.0": 0.6108,
+  "global/m=16.0": 0.6108,
+  "task/m=0.0": 0.6575,
+  "task/m=1.0": 0.6574,
+  "task/m=4.0": 0.6574,
+  "task/m=16.0": 0.6558
+ },
+ "chosen_on_hc_train": {
+  "grouping": "task",
+  "m": 0.0
+ },
+ "embedllm_epochs": 256,
+ "embedllm_tune_val_curve": {
+  "8": 0.682529335071708,
+  "16": 0.6990438939591482,
+  "32": 0.7144719687092569,
+  "64": 0.7175141242937854,
+  "128": 0.7157757496740548,
+  "256": 0.7192524989135158,
+  "512": 0.7188179052585832
+ },
+ "hc_test": {
+  "ceiling": {
+   "theta_star": "ceiling/tau=0.85",
+   "avg_acc": 0.5628,
+   "perf_gain": 0.0378,
+   "cost_save": 0.1889,
+   "slice_acc": 0.2599,
+   "pareto_dist": 0.1386
+  },
+  "avengers_pro": {
+   "theta_star": "avengers_pro/alpha=0.95",
+   "avg_acc": 0.5509,
+   "perf_gain": 0.0159,
+   "cost_save": 0.3822,
+   "slice_acc": 0.2316,
+   "pareto_dist": 0.015
+  },
+  "embedllm": {
+   "theta_star": "embedllm/tau=0.75",
+   "avg_acc": 0.5908,
+   "perf_gain": 0.0895,
+   "cost_save": 0.0381,
+   "slice_acc": 0.2599,
+   "pareto_dist": 0.265
+  },
+  "best_single": {
+   "model": "gpt-5",
+   "avg_acc": 0.5423
+  },
+  "slice_items": 354
+ },
+ "paired_bootstrap_ceiling_minus": {
+  "avengers_pro": {
+   "avg_acc_diff": {
+    "mean": 0.0118,
+    "ci90": [
+     -0.0056,
+     0.0288
+    ]
+   },
+   "slice_acc_diff": {
+    "mean": 0.0283,
+    "ci90": [
+     0.003,
+     0.0531
+    ]
+   }
+  },
+  "embedllm": {
+   "avg_acc_diff": {
+    "mean": -0.0281,
+    "ci90": [
+     -0.051,
+     -0.0051
+    ]
+   },
+   "slice_acc_diff": {
+    "mean": -0.0001,
+    "ci90": [
+     -0.0339,
+     0.0344
+    ]
+   }
+  }
+ },
+ "gate": "NOT MET",
+ "held_items_read": 0
+}
