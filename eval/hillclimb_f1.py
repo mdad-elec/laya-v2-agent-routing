@@ -11,6 +11,10 @@ all four tiers (the Phase 1 hand-check found every other benchmark routed to `lo
   downgrade mid-session). Only the router's own earlier decisions are used, never a label.
 - R2 escalate-after-error: one tier up when the digest shows an error in the recent tool rounds.
 - R3: R1 + R2.
+- R4 stage from tool rounds (root-caused on HC-train after R1-R3 stalled): `stage` was the user-turn
+  count, which is 1 at every step of an agent loop (all 127 HC-train SWE-bench rows read "1"). In a
+  session with tool rounds, the step position is the tool-round count, which the digest already
+  carries (`tool_rounds.n` = step − 1 on every SWE-bench row).
 
 Appends one line per round to results/g1/hillclimb.jsonl. No held row is read.
 """
@@ -28,6 +32,7 @@ from eval.phase2_f1 import v0
 from eval.twinrouterbench_score import score
 from labels import twinrouterbench as trb
 from labels.gate_s3 import prereg_sha
+from router import digest
 from train.table import TierTable, cheapest_passing
 
 FIELDS = ("task", "stage", "errors")
@@ -39,6 +44,15 @@ LEDGER = Path("results/g1/hillclimb.jsonl")
 def table_choice(fit, query, ans, y, tau):
     t = TierTable(M).fit([c1.key(ans[i], FIELDS) for i in fit], [int(y[i]) for i in fit])
     return {i: cheapest_passing(t.p_solve(c1.key(ans[i], FIELDS)), tau) for i in query}
+
+
+def round_stage(n_rounds: int) -> str:
+    return "first" if n_rounds == 0 else "1-3" if n_rounds <= 3 else "4-7" if n_rounds <= 7 else "8+"
+
+
+def with_round_stage(row: dict, a: dict) -> dict:
+    n = digest.build(row["messages"], row.get("functions"))["tool_rounds"]["n"]
+    return {**a, "stage": round_stage(n)} if n else a
 
 
 def apply_policy(rows, base: dict[int, int], ans, carry: bool, escalate: bool) -> dict[int, int]:
@@ -76,6 +90,11 @@ def comb(rows, idx, pred):
 
 
 def main() -> None:
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--rounds", default="R1,R2,R3", help="comma list of round ids to run")
+    wanted = ap.parse_args().rounds.split(",")
     rows = [r for r in trb.load() if trb.split(r) == "tune"]
     y = np.array([r["target_tier_id"] for r in rows])
     ans = [v0(r, c1.structural(r)) for r in rows]
@@ -85,7 +104,9 @@ def main() -> None:
     swe_train = [i for i in train if rows[i]["benchmark"] == "swebench"]
     swe_test = [i for i in test if rows[i]["benchmark"] == "swebench"]
 
-    def evaluate(carry, escalate):
+    ans_r4 = [with_round_stage(r, a) for r, a in zip(rows, ans, strict=True)]
+
+    def evaluate(carry, escalate, ans=ans):
         tau = max(c1.TAU_GRID, key=lambda t: (comb(rows, train, oof(rows, folds, train, ans, y, t, carry, escalate)), -t))
         p_tr = oof(rows, folds, train, ans, y, tau, carry, escalate)
         p_te = route(rows, train, test, ans, y, tau, carry, escalate)
@@ -93,10 +114,13 @@ def main() -> None:
                 "swe_hc_train": round(comb(rows, swe_train, p_tr), 2), "swe_hc_test": round(comb(rows, swe_test, p_te), 2)}, p_te
 
     base, base_pred = evaluate(False, False)
-    rounds = {"R1 carry-forward": (True, False), "R2 escalate-after-error": (False, True), "R3 carry+escalate": (True, True)}
+    rounds = {"R1 carry-forward": (True, False, ans), "R2 escalate-after-error": (False, True, ans), "R3 carry+escalate": (True, True, ans),
+              "R4 stage from tool rounds": (False, False, ans_r4)}
     results = {}
-    for name, (carry, esc) in rounds.items():
-        res, pred = evaluate(carry, esc)
+    for name, (carry, esc, a) in rounds.items():
+        if name.split()[0] not in wanted:
+            continue
+        res, pred = evaluate(carry, esc, a)
         boot = c1.bootstrap(rows, test, pred, base_pred) if pred != base_pred else {"mean": 0.0, "ci90": [0.0, 0.0]}
         results[name] = (res, boot)
 
