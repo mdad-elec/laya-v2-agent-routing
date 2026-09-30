@@ -8,22 +8,23 @@ This repository holds two things:
 | | What | Status |
 |---|---|---|
 | [`studies/v2/`](studies/v2/) | **Laya-v2**: a pre-registered study of a fine-tuned Laya System-One router against an LLM judge, RouteLLM and vLLM Semantic Router. Held-out band accuracy **0.801 vs the judge's 0.662** (McNemar p = 0.0027). Frozen at tag [`v2-study-final`](../../tree/v2-study-final). | Done (published) |
-| everything else | **Laya-g1**: a general routing checkpoint for all AI work, trained on **public data only**, seeing session history and tools, and choosing cells from a measured **Model Atlas**. | **In progress** |
+| everything else | **Laya-g1**: a general router trained on **public data only**, reading the session, choosing from measured outcomes. Held read once: **F1 met** (TwinRouterBench, +9.6 Combined over SR-KNN, CI90 [5.1, 14.1]); **F3 not met** by one check (LLMRouterBench: better than Avengers-Pro and EmbedLLM on accuracy, and on the hard slice vs EmbedLLM, but not significantly vs Avengers-Pro; CI lower bound −0.0006); **F2 (RouterArena) not run**. See [`VERDICT-g1.md`](VERDICT-g1.md). | Read, published as is |
 
 ## Laya-g1, in one paragraph
 
-Laya-v2 won on the asks it was tuned on, and failed RouterBench's general tasks (0.01–0.37 band accuracy).
-It also read only the latest user message, so a short follow-up to hard work ("yes, go ahead") looked easy.
-g1 fixes both:
-- **General labels.** The label for an item is "the cheapest price tier that solves it", taken from
-  public item-level outcomes: LLMRouterBench (33 models × 21 datasets) and BFCL's per-entry results
-  (115 models on multi-turn tool use). Laya learns how hard a task is; the Atlas maps that onto the
-  models actually served. Only what no public source covers is measured here, on the eight suites below.
-- **Session-aware input.** Laya is fine-tuned on a compact session digest: the request, prior turns,
-  the tools offered, and what the tools did. The digest never includes model or seat names; including
-  them is what collapsed v2's accuracy from 0.711 to 0.342.
+Laya-v2 won on the asks it was tuned on and failed RouterBench's general tasks. g1's first recipe, a
+fine-tuned encoder predicting per-item P(solve), lost to a plain per-model × dataset success table
+(calibration BCE 0.571 vs 0.530), so it was retired before any held read. Recipe 2 is three layers:
+- **A System-One brain answers typed questions over a session digest** (goal, prior turns, tools,
+  tool rounds, errors, tests, context). The digest never names a model or seat.
+- **A measured table gives P(solve)** per (answers, model) from public outcomes.
+- **A policy with continuity rules in code** picks the cheapest model above τ.
 
-Claims are pre-registered, and are read once on held-out data, RouterArena, LLMRouterBench and RouterBench.
+On F1 a logistic-regression brain on Qwen3 embeddings already answers the task at 99.8%, so the Laya
+fine-tune was not needed there. **What it does not show:** that session features beat knowing the task.
+On TwinRouterBench a task-only table scores the same, and the gain over SR-KNN is concentrated on
+SWE-bench. Every claim is pre-registered (`PREREG-g1.md`, Amendments 1–10, including the reads and
+the one bar restatement), and every held read is logged in `results/g1/heldout-ledger.jsonl`.
 
 ## The pieces
 

@@ -39,3 +39,10 @@ ceiling.
 - F3's Phase 1 ceiling was read three times on HC-test (Amendments 7–9), and F3's bar was restated
   (Amendment 10) after those reads and before the held read. F1's climb ran five rounds; none was kept.
 - A new F3 attempt needs a new dated amendment and a genuinely new estimator, and would be held read 2.
+
+## Publication decision (owner, 2026-09-30)
+
+Amendment 1 said nothing would be pushed until F1, F2 and F3 were all met. After reading this verdict,
+the owner lifted that rule **for publication only**: the repository is published with this verdict
+exactly as written. F1 is met, F3 is not met, F2 was not run. No bar, threshold or read was changed
+for it. F2 is not run, and F3 is not retried.
