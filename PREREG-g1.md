@@ -417,3 +417,39 @@ read mechanics (Amendment 6), and the reads rule: every held read of F1 or F3 an
 appended to `results/g1/heldout-ledger.jsonl`; after a miss, another attempt needs a new dated
 amendment first; the verdict reports how many reads were made; a bar not met is reported as not
 met. **Nothing is pushed until F1, F2 and F3 are all met.**
+
+## Amendment 8 (2026-09-30): F3's Layer 2 gains per-item evidence, after its Phase 1 ceiling failed
+
+Written after the F3 ceiling's first read (`results/g1/ceiling-f3.json`, NOT MET) and before its
+second. No held item has been read. F1's ceiling passed and is unaffected by this amendment.
+
+### What happened
+
+With the task answered perfectly (the item's dataset), the dataset-level table reached AvgAcc 0.563
+on HC-test, against Avengers-Pro 0.551 (difference CI90 [−0.006, +0.029]) and EmbedLLM 0.591
+([−0.051, −0.005]). On the recall slice it beat Avengers-Pro ([+0.003, +0.053]) and tied EmbedLLM.
+A perfect task answer is not enough on single-turn items: which model solves an item varies inside
+a dataset, and EmbedLLM's per-item estimate sees it. So the change is to Layer 2, not the brain.
+
+### The change: task-conditioned kNN over per-model outcomes, shrunk toward the task row
+
+For an item q with task t (the oracle dataset in this ceiling; the brain's answer later):
+
+    P(model solves | q) = (Σ_{j ∈ N_k(q, t)} score_j(model) + m · row_t(model)) / (k' + m)
+
+where N_k(q, t) is the k nearest HC-train items **of the same task** by cosine over the same Qwen3
+embeddings the baselines use, k' = |N_k| (fewer when the task has fewer items), and row_t is the
+Amendment 7 task row. Expected cost is shrunk the same way. The policy (cheapest above τ, 19-point
+grid) and F3's formulas are unchanged.
+
+- **Menu, fixed now:** k ∈ {8, 16, 32, 64}, m ∈ {1, 4, 16}, neighbours weighted uniformly.
+  Chosen on HC-train alone, by 5-fold out-of-fold best AvgAcc (the `g1-hc-fold/` folds already in
+  `eval/ceiling_f3.py`).
+- **Reported beside it, never chosen from:** the same estimator with neighbours drawn across all
+  tasks (no task answer at all).
+- **The gate is unchanged:** it beats each of Avengers-Pro and EmbedLLM on AvgAcc(θ*) and on
+  recall-slice accuracy, paired bootstrap stratified by dataset, 10,000 resamples, 90% CI lower
+  bound > 0.
+- **Reads.** This is HC-test's **second** F3 read. Both reads are reported. If this one also fails,
+  a third needs another dated amendment first. HC-test is a tune split: its items still never touch
+  held, and its failures are still never opened.
