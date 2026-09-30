@@ -1,0 +1,179 @@
+{
+ "prereg_sha": "f74aa09222bab878e8dfef81f98daf90aaabc04d",
+ "code": "211b125fb1a1e6a398c61e287a7642cf5fb102f5",
+ "at": "2026-09-30T12:11:58+00:00",
+ "F1": {
+  "held_rows": 470,
+  "held_trajectories": 263,
+  "proxy_answer_accuracy_held": {
+   "task": 0.9979,
+   "domain": 1.0
+  },
+  "g1_held": {
+   "case_pass_rate_percent": 97.02,
+   "case_exact_match_percent": 81.06,
+   "trajectory_pass_rate_percent": 96.17,
+   "cost_savings_score_percent": 62.64,
+   "combined_score_percent": 84.22
+  },
+  "sr_knn_held": {
+   "case_pass_rate_percent": 92.13,
+   "case_exact_match_percent": 77.45,
+   "trajectory_pass_rate_percent": 78.51,
+   "cost_savings_score_percent": 50.26,
+   "combined_score_percent": 74.59
+  },
+  "part1_paired_bootstrap_g1_minus_sr_knn": {
+   "resamples": 2000,
+   "seed": 20260927,
+   "mean": 9.6,
+   "ci90": [
+    5.12,
+    14.14
+   ]
+  },
+  "part1": "MET",
+  "part2_g1_in_sample_held": {
+   "case_pass_rate_percent": 97.02,
+   "case_exact_match_percent": 81.49,
+   "trajectory_pass_rate_percent": 96.17,
+   "cost_savings_score_percent": 62.67,
+   "combined_score_percent": 84.34
+  },
+  "part2_published_sr_knn_in_sample": 77.89,
+  "part2": "MET",
+  "F1": "MET",
+  "reported_not_selected": {
+   "R4 stage from tool rounds (tau 0.78)": {
+    "case_pass_rate_percent": 95.53,
+    "case_exact_match_percent": 80.43,
+    "trajectory_pass_rate_percent": 86.38,
+    "cost_savings_score_percent": 55.07,
+    "combined_score_percent": 79.35
+   },
+   "task only": {
+    "case_pass_rate_percent": 97.02,
+    "case_exact_match_percent": 81.49,
+    "trajectory_pass_rate_percent": 96.17,
+    "cost_savings_score_percent": 62.67,
+    "combined_score_percent": 84.34
+   },
+   "structure only": {
+    "case_pass_rate_percent": 98.3,
+    "case_exact_match_percent": 50.43,
+    "trajectory_pass_rate_percent": 95.32,
+    "cost_savings_score_percent": 39.95,
+    "combined_score_percent": 71.0
+   },
+   "constants": {
+    "always_low": 67.71,
+    "always_mid": 53.23,
+    "always_mid_high": 52.77,
+    "always_high": 54.2
+   },
+   "per_benchmark_combined": {
+    "bfcl": {
+     "g1": 96.08,
+     "sr_knn": 97.34
+    },
+    "mtrag": {
+     "g1": 94.29,
+     "sr_knn": 94.48
+    },
+    "pinchbench": {
+     "g1": 94.18,
+     "sr_knn": 98.6
+    },
+    "qmsum": {
+     "g1": 91.07,
+     "sr_knn": 86.54
+    },
+    "swebench": {
+     "g1": 62.99,
+     "sr_knn": 33.59
+    }
+   }
+  }
+ },
+ "F3": {
+  "held_items": 6138,
+  "fit_items": 4560,
+  "metrics": {
+   "g1": {
+    "theta_star": "g1/tau=0.8",
+    "avg_acc": 0.6584,
+    "perf_gain": 0.0561,
+    "cost_save": 0.0177,
+    "slice_acc": 0.2555,
+    "pareto_dist": 0.0994
+   },
+   "avengers_pro": {
+    "theta_star": "avengers_pro/alpha=0.95",
+    "avg_acc": 0.647,
+    "perf_gain": 0.0377,
+    "cost_save": -0.025,
+    "slice_acc": 0.2449,
+    "pareto_dist": 0.0052
+   },
+   "embedllm": {
+    "theta_star": "embedllm/tau=0.9",
+    "avg_acc": 0.6451,
+    "perf_gain": 0.0348,
+    "cost_save": -0.0448,
+    "slice_acc": 0.2449,
+    "pareto_dist": 0.1817
+   },
+   "best_single": {
+    "model": "gpt-5",
+    "avg_acc": 0.6235
+   },
+   "slice_items": 2501
+  },
+  "paired_bootstrap_g1_minus": {
+   "avengers_pro": {
+    "avg_acc_diff": {
+     "mean": 0.0115,
+     "ci90": [
+      0.0054,
+      0.0177
+     ]
+    },
+    "slice_acc_diff": {
+     "mean": 0.0106,
+     "ci90": [
+      -0.0006,
+      0.0219
+     ]
+    }
+   },
+   "embedllm": {
+    "avg_acc_diff": {
+     "mean": 0.0132,
+     "ci90": [
+      0.0074,
+      0.0197
+     ]
+    },
+    "slice_acc_diff": {
+     "mean": 0.0106,
+     "ci90": [
+      0.0033,
+      0.018
+     ]
+    }
+   }
+  },
+  "checks": {
+   "avengers_pro": {
+    "avg_acc_non_inferior": true,
+    "slice_superior": false
+   },
+   "embedllm": {
+    "avg_acc_non_inferior": true,
+    "slice_superior": true
+   }
+  },
+  "F3": "NOT MET"
+ },
+ "F2": "not run: needs the owner's RouterArena spend approval"
+}
