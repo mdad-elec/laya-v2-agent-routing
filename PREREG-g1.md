@@ -453,3 +453,47 @@ grid) and F3's formulas are unchanged.
 - **Reads.** This is HC-test's **second** F3 read. Both reads are reported. If this one also fails,
   a third needs another dated amendment first. HC-test is a tune split: its items still never touch
   held, and its failures are still never opened.
+
+## Amendment 9 (2026-09-30): F3's Layer 2 becomes a learned per-item estimator, on a stratified HC-test
+
+Written after F3's second ceiling read (`results/g1/ceiling-f3-knn.json`, NOT MET) and before its
+third. No held item has been read. F1 is unaffected: Phase 2 passed (`results/g1/phase2-f1.json`).
+
+### What happened
+
+Task-conditioned kNN over per-model outcomes (Amendment 8; k 16, m 16, chosen on HC-train) reached
+AvgAcc 0.558 against EmbedLLM's 0.591 (CI90 of the difference [−0.057, −0.008]); the dataset-level
+table had reached 0.563. Neither non-parametric estimator matches EmbedLLM's learned per-item model
+on single-turn items. A **flaw in Amendment 7's split** is recorded too: HC-test held 1 AIME and 5
+LiveMathBench items, while AvgAcc weights each dataset equally, so one item was a ninth of the
+score.
+
+### The split, fixed
+
+HC-test is re-cut **stratified by dataset**, with a fresh salt. Within each dataset, usable tune
+items are ordered by `sha256("g1-hc9/" + prompt_hash)`, and the first
+`max(⌈0.15·n⌉, min(⌈n/2⌉, 20))` go to HC-test; the rest are HC-train. With today's counts that is
+AIME 8/16, LiveMathBench 20/57 and tau2 20/118, about 727 items in all. It overlaps the old
+HC-test partly. Only its numbers were ever read, never its items, and this is disclosed; every
+earlier read stays reported.
+
+### The estimator
+
+Our router keeps the policy (cheapest above τ, 19-point grid) and the task row's expected cost.
+Layer 2's P(solve) is a learned per-item model, using EmbedLLM's own recipe and code
+(`eval/baselines/embedllm.py`, its epoch rule on 10% of the fit items) in one of two ways:
+
+- **`mf+task`:** EmbedLLM's model, with the item's task answer (the oracle dataset here, the brain's
+  answer later) appended to its input vector as a one-hot.
+- **`blend(w)`:** `w · P_embedllm + (1 − w) · row_task`, with w ∈ {0.25, 0.5, 0.75}.
+
+**Menu, fixed now:** {mf+task, blend(0.25), blend(0.5), blend(0.75)}, chosen on HC-train alone by
+5-fold out-of-fold best AvgAcc (the `g1-hc-fold/` folds).
+
+**The gate is unchanged:** it beats each of Avengers-Pro and EmbedLLM (EmbedLLM exactly as before,
+its input without the task) on AvgAcc(θ*) and on recall-slice accuracy, paired bootstrap stratified
+by dataset, 10,000 resamples, 90% CI lower bound > 0.
+
+**Reads.** This is the first read of the stratified HC-test and the third F3 ceiling read in all.
+If it fails, F3 is reported as not reachable by this programme's estimators so far, and the next
+step is the owner's call. The threshold is not moved.
