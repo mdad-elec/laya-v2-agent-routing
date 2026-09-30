@@ -11,6 +11,8 @@ all four tiers (the Phase 1 hand-check found every other benchmark routed to `lo
   downgrade mid-session). Only the router's own earlier decisions are used, never a label.
 - R2 escalate-after-error: one tier up when the digest shows an error in the recent tool rounds.
 - R3: R1 + R2.
+- R5: R4's stage with the shrinkage m chosen on HC-train from Amendment 7's menu (R4's finer stage
+  fragments the table, and m = 0 has no shrinkage).
 - R4 stage from tool rounds (root-caused on HC-train after R1-R3 stalled): `stage` was the user-turn
   count, which is 1 at every step of an agent loop (all 127 HC-train SWE-bench rows read "1"). In a
   session with tool rounds, the step position is the tool-round count, which the digest already
@@ -41,8 +43,8 @@ BOOT = 1000
 LEDGER = Path("results/g1/hillclimb.jsonl")
 
 
-def table_choice(fit, query, ans, y, tau):
-    t = TierTable(M).fit([c1.key(ans[i], FIELDS) for i in fit], [int(y[i]) for i in fit])
+def table_choice(fit, query, ans, y, tau, m=None):
+    t = TierTable(M if m is None else m).fit([c1.key(ans[i], FIELDS) for i in fit], [int(y[i]) for i in fit])
     return {i: cheapest_passing(t.p_solve(c1.key(ans[i], FIELDS)), tau) for i in query}
 
 
@@ -72,16 +74,16 @@ def apply_policy(rows, base: dict[int, int], ans, carry: bool, escalate: bool) -
     return out
 
 
-def route(rows, fit, query, ans, y, tau, carry, escalate):
-    return apply_policy(rows, table_choice(fit, query, ans, y, tau), ans, carry, escalate)
+def route(rows, fit, query, ans, y, tau, carry, escalate, m=None):
+    return apply_policy(rows, table_choice(fit, query, ans, y, tau, m), ans, carry, escalate)
 
 
-def oof(rows, folds, train, ans, y, tau, carry, escalate):
+def oof(rows, folds, train, ans, y, tau, carry, escalate, m=None):
     pred = {}
     for f in c1.HC_TRAIN_FOLDS:
         q = [i for i in train if folds[i] == f]
         fit = [i for i in train if folds[i] != f]
-        pred.update(route(rows, fit, q, ans, y, tau, carry, escalate))
+        pred.update(route(rows, fit, q, ans, y, tau, carry, escalate, m))
     return pred
 
 
@@ -106,21 +108,22 @@ def main() -> None:
 
     ans_r4 = [with_round_stage(r, a) for r, a in zip(rows, ans, strict=True)]
 
-    def evaluate(carry, escalate, ans=ans):
-        tau = max(c1.TAU_GRID, key=lambda t: (comb(rows, train, oof(rows, folds, train, ans, y, t, carry, escalate)), -t))
-        p_tr = oof(rows, folds, train, ans, y, tau, carry, escalate)
-        p_te = route(rows, train, test, ans, y, tau, carry, escalate)
-        return {"tau": tau, "hc_train": round(comb(rows, train, p_tr), 2), "hc_test": round(comb(rows, test, p_te), 2),
+    def evaluate(carry, escalate, ans=ans, m_grid=(M,)):
+        m, tau = max(((m_, t) for m_ in m_grid for t in c1.TAU_GRID),
+                     key=lambda mt: (comb(rows, train, oof(rows, folds, train, ans, y, mt[1], carry, escalate, mt[0])), -mt[1], -mt[0]))
+        p_tr = oof(rows, folds, train, ans, y, tau, carry, escalate, m)
+        p_te = route(rows, train, test, ans, y, tau, carry, escalate, m)
+        return {"m": m, "tau": tau, "hc_train": round(comb(rows, train, p_tr), 2), "hc_test": round(comb(rows, test, p_te), 2),
                 "swe_hc_train": round(comb(rows, swe_train, p_tr), 2), "swe_hc_test": round(comb(rows, swe_test, p_te), 2)}, p_te
 
     base, base_pred = evaluate(False, False)
     rounds = {"R1 carry-forward": (True, False, ans), "R2 escalate-after-error": (False, True, ans), "R3 carry+escalate": (True, True, ans),
-              "R4 stage from tool rounds": (False, False, ans_r4)}
+              "R4 stage from tool rounds": (False, False, ans_r4), "R5 R4-stage+shrinkage": (False, False, ans_r4)}
     results = {}
     for name, (carry, esc, a) in rounds.items():
         if name.split()[0] not in wanted:
             continue
-        res, pred = evaluate(carry, esc, a)
+        res, pred = evaluate(carry, esc, a, c1.M_GRID if name.startswith("R5") else (M,))
         boot = c1.bootstrap(rows, test, pred, base_pred) if pred != base_pred else {"mean": 0.0, "ci90": [0.0, 0.0]}
         results[name] = (res, boot)
 
@@ -130,7 +133,16 @@ def main() -> None:
     for name, (res, boot) in results.items():
         d_train, d_test = res["hc_train"] - base["hc_train"], res["hc_test"] - base["hc_test"]
         keep = d_train > 0 and d_test > floor
-        decision = "keep" if keep else ("revert: train-only gain (overfit)" if d_train > 0 and d_test <= 0 else "revert: inside the noise floor" if d_test > 0 else "revert")
+        if keep:
+            decision = "keep"
+        elif d_train <= 0 and d_test > 0:
+            decision = "revert: HC-train regressed (test-only gain is not a result)"
+        elif d_train > 0 and d_test <= 0:
+            decision = "revert: train-only gain (overfit)"
+        elif d_test > 0:
+            decision = "revert: inside the noise floor"
+        else:
+            decision = "revert: both regressed or unchanged"
         lines.append({"at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "prereg_sha": prereg_sha(), "bar": "F1",
                       "change": name, "baseline": base, "round": res, "paired_bootstrap_round_minus_baseline_hc_test": boot,
                       "noise_floor_combined_points": round(floor, 2), "decision": decision})
