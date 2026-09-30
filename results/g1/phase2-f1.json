@@ -1,0 +1,49 @@
+{
+ "prereg_sha": "5a314344bf87ae385e1ba7fccdc53b8c4c986bd7",
+ "phase": "2 (text-classifier proxy), F1",
+ "proxy": "logistic regression on Qwen3-Embedding-0.6B",
+ "proxy_answer_accuracy_hc_test": {
+  "task": 0.9948,
+  "domain": 0.9948
+ },
+ "v0_vocabulary_ceiling": {
+  "chosen_on_hc_train": {
+   "grouping": "task+stage+errors",
+   "m": 0.0,
+   "tau": 0.76,
+   "hc_train_oof": 79.01
+  },
+  "hc_test": {
+   "case_pass_rate_percent": 93.81,
+   "trajectory_pass_rate_percent": 89.18,
+   "cost_savings_score_percent": 55.58,
+   "combined_score_percent": 78.97
+  }
+ },
+ "realised_proxy_brain": {
+  "chosen_on_hc_train": {
+   "grouping": "task+stage+errors",
+   "m": 0.0,
+   "tau": 0.76,
+   "hc_train_oof": 78.66
+  },
+  "hc_test": {
+   "case_pass_rate_percent": 93.81,
+   "trajectory_pass_rate_percent": 89.18,
+   "cost_savings_score_percent": 55.58,
+   "combined_score_percent": 78.97
+  }
+ },
+ "sr_knn_hc_test_combined": 63.33,
+ "paired_bootstrap_realised_minus_sr_knn": {
+  "resamples": 2000,
+  "seed": 20260930,
+  "mean": 15.72,
+  "ci90": [
+   8.53,
+   22.39
+  ]
+ },
+ "gate": "PASS",
+ "held_rows_read": 0
+}
