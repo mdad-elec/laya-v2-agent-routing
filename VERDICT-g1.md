@@ -46,3 +46,17 @@ Amendment 1 said nothing would be pushed until F1, F2 and F3 were all met. After
 the owner lifted that rule **for publication only**: the repository is published with this verdict
 exactly as written. F1 is met, F3 is not met, F2 was not run. No bar, threshold or read was changed
 for it. F2 is not run, and F3 is not retried.
+
+## The estate transfer check (reported, not gating; read once, 2026-09-30)
+
+`eval/estate_gate.py` ran recipe 2 on the Laya-v2 study's frozen splits: 148 tune asks and 149 held,
+the published pilot and borrowed rows. The band table was fitted on the tune asks, as the owner
+allowed for the production table; the task brain was trained on public data only. The
+configuration chosen on tune (neighbours, k 9, m 1, τ 0.62) reached **held band accuracy 0.524**
+(Wilson 90% [0.456, 0.590]; borrowed 0.549, pilot 0.483). **Laya-v2 reaches 0.801** on the same
+held halves. The S8 bar was 0.771, so it is **not met**.
+
+On single asks, difficulty lives in the wording. A router fine-tuned on labelled asks learns it; a
+task table with neighbours over 148 asks does not. **Recipe 2 is therefore not wired into the estate's
+router, and Laya-v2 remains the better router for this estate.** Recipe 2's result is F1's
+agentic-benchmark result, not a replacement for v2 on single-ask traffic.
