@@ -1,0 +1,173 @@
+{
+ "prereg_sha": "ffa19e9b0fadeeea671a2a8555b54da7d841f29d",
+ "phase": "1 (oracle-group ceiling)",
+ "bar": "F1 part 1 shape, on HC-test",
+ "rows": {
+  "tune": 500,
+  "hc_train": 306,
+  "hc_test": 194,
+  "hc_test_trajectories": 113
+ },
+ "menu": {
+  "groupings": {
+   "global": [],
+   "structure_only": [
+    "stage",
+    "errors",
+    "context"
+   ],
+   "task": [
+    "task"
+   ],
+   "task+stage": [
+    "task",
+    "stage"
+   ],
+   "task+stage+errors": [
+    "task",
+    "stage",
+    "errors"
+   ],
+   "domain+stage+errors+tests+context": [
+    "domain",
+    "stage",
+    "errors",
+    "tests",
+    "context"
+   ]
+  },
+  "m": [
+   0.0,
+   1.0,
+   4.0,
+   16.0
+  ],
+  "tau": [
+   0.5,
+   0.52,
+   0.54,
+   0.56,
+   0.58,
+   0.6,
+   0.62,
+   0.64,
+   0.66,
+   0.68,
+   0.7,
+   0.72,
+   0.74,
+   0.76,
+   0.78,
+   0.8,
+   0.82,
+   0.84,
+   0.86,
+   0.88,
+   0.9,
+   0.92,
+   0.94,
+   0.96,
+   0.98
+  ]
+ },
+ "chosen_on_hc_train": {
+  "grouping": "task",
+  "m": 0.0,
+  "tau": 0.76,
+  "hc_train_oof": 78.54
+ },
+ "ceiling_hc_test": {
+  "case_pass_rate_percent": 92.78,
+  "case_exact_match_percent": 77.84,
+  "trajectory_pass_rate_percent": 86.6,
+  "cost_savings_score_percent": 53.95,
+  "combined_score_percent": 77.79
+ },
+ "sr_knn_hc_test": {
+  "case_pass_rate_percent": 81.96,
+  "case_exact_match_percent": 71.65,
+  "trajectory_pass_rate_percent": 61.86,
+  "cost_savings_score_percent": 37.86,
+  "combined_score_percent": 63.33
+ },
+ "constants_hc_test": {
+  "always_low": 63.85,
+  "always_mid": 54.43,
+  "always_mid_high": 55.13,
+  "always_high": 53.61
+ },
+ "per_grouping": {
+  "global": {
+   "fields": [],
+   "m": 0.0,
+   "tau": 0.5,
+   "hc_train_oof": 57.4,
+   "hc_test": 63.85
+  },
+  "structure_only": {
+   "fields": [
+    "stage",
+    "errors",
+    "context"
+   ],
+   "m": 0.0,
+   "tau": 0.92,
+   "hc_train_oof": 66.71,
+   "hc_test": 67.98
+  },
+  "task": {
+   "fields": [
+    "task"
+   ],
+   "m": 0.0,
+   "tau": 0.76,
+   "hc_train_oof": 78.54,
+   "hc_test": 77.79
+  },
+  "task+stage": {
+   "fields": [
+    "task",
+    "stage"
+   ],
+   "m": 0.0,
+   "tau": 0.76,
+   "hc_train_oof": 78.54,
+   "hc_test": 77.79
+  },
+  "task+stage+errors": {
+   "fields": [
+    "task",
+    "stage",
+    "errors"
+   ],
+   "m": 0.0,
+   "tau": 0.76,
+   "hc_train_oof": 78.36,
+   "hc_test": 78.97
+  },
+  "domain+stage+errors+tests+context": {
+   "fields": [
+    "domain",
+    "stage",
+    "errors",
+    "tests",
+    "context"
+   ],
+   "m": 0.0,
+   "tau": 0.8,
+   "hc_train_oof": 77.01,
+   "hc_test": 78.97
+  }
+ },
+ "paired_bootstrap_ceiling_minus_sr_knn": {
+  "resamples": 2000,
+  "seed": 20260930,
+  "mean": 14.5,
+  "ci90": [
+   7.43,
+   21.55
+  ]
+ },
+ "gate": "PASS",
+ "held_rows_read": 0
+}
